@@ -5,11 +5,6 @@ public class ErroDeParametroOutputDto {
     private String parametro;
     private String mensagem;
 
-    public ErroDeParametroOutputDto(String parametro, String mensagem) {
-        this.parametro = parametro;
-        this.mensagem = mensagem;
-    }
-
     public String getParametro() {
         return parametro;
     }

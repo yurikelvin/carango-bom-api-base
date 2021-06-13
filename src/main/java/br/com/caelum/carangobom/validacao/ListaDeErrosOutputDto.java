@@ -5,11 +5,7 @@ import java.util.List;
 
 public class ListaDeErrosOutputDto {
 
-    private List<ErroDeParametroOutputDto> erros = new ArrayList<>();
-
-    public void adicionaErroEmParametro(String parametro, String mensagem) {
-        erros.add(new ErroDeParametroOutputDto(parametro, mensagem));
-    }
+    private List<ErroDeParametroOutputDto> erros;
 
     public int getQuantidadeDeErros() {
         return erros.size();

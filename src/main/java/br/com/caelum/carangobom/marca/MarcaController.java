@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.marca;
 
+import br.com.caelum.carangobom.validacao.ErroDeParametroOutputDto;
 import br.com.caelum.carangobom.validacao.ListaDeErrosOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,8 +87,15 @@ public class MarcaController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ListaDeErrosOutputDto validacao(MethodArgumentNotValidException excecao) {
-        ListaDeErrosOutputDto listaDeErros = new ListaDeErrosOutputDto();
-        excecao.getBindingResult().getFieldErrors().forEach(error -> listaDeErros.adicionaErroEmParametro(error.getField(), error.getDefaultMessage()));
-        return listaDeErros;
+        List<ErroDeParametroOutputDto> l = new ArrayList<>();
+        excecao.getBindingResult().getFieldErrors().forEach(e -> {
+            ErroDeParametroOutputDto d = new ErroDeParametroOutputDto();
+            d.setParametro(e.getField());
+            d.setMensagem(e.getDefaultMessage());
+            l.add(d);
+        });
+        ListaDeErrosOutputDto l2 = new ListaDeErrosOutputDto();
+        l2.setErros(l);
+        return l2;
     }
 }
