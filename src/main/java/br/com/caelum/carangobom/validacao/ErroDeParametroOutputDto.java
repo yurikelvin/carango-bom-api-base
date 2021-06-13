@@ -1,0 +1,28 @@
+package br.com.caelum.carangobom.validacao;
+
+public class ErroDeParametroOutputDto {
+
+    private String parametro;
+    private String mensagem;
+
+    public ErroDeParametroOutputDto(String parametro, String mensagem) {
+        this.parametro = parametro;
+        this.mensagem = mensagem;
+    }
+
+    public String getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(String parametro) {
+        this.parametro = parametro;
+    }
+
+    public String getMensagem() {
+        return mensagem;
+    }
+
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
+    }
+}
