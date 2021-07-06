@@ -8,7 +8,6 @@ public class UserDTO {
     private String password;
 
     public UserDTO(User user) {
-        super();
         this.username = user.getUsername();
         this.password = user.getPassword();
     }
