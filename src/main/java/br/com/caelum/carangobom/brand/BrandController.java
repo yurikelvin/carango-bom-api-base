@@ -9,7 +9,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +32,6 @@ public class BrandController {
         this.brandRepository = brandRepository;
     }
     
-//    @GetMapping
-//    public List<Brand> findAll() {
-//        return brandRepository.findAll();
-//        
-//    }
-
     @GetMapping
     public Page<Brand> findAll(
 			@PageableDefault(sort = "name", direction = Direction.ASC, page = 0, size = 10)

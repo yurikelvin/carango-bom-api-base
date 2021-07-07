@@ -6,14 +6,9 @@ import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import br.com.caelum.carangobom.brand.Brand;
-import br.com.caelum.carangobom.brand.BrandController;
-import br.com.caelum.carangobom.brand.BrandRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,14 +36,14 @@ class BrandControllerTest {
     }
 
     @Test
-    void deveRetornarListaQuandoHouverResultados() {
-        List<Brand> marcas = List.of(
+    void shouldReturnListWhenThereAreResults() {
+        List<Brand> brands = List.of(
             new Brand(1L, "Audi"),
             new Brand(2L, "BMW"),
             new Brand(3L, "Fiat")
         );
         
-        Page<Brand> pagedBrands = new PageImpl<Brand>(marcas);
+        Page<Brand> pagedBrands = new PageImpl<Brand>(brands);
         
         PageRequest pageable = PageRequest.of(1, 10);
         
@@ -60,7 +55,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void deveRetornarMarcaPeloId() {
+    void shouldReturnBrandById() {
         Brand audi = new Brand(1L, "Audi");
 
         when(brandRepository.findById(1L))
@@ -72,7 +67,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void deveRetornarNotFoundQuandoRecuperarMarcaComIdInexistente() {
+    void shouldReturnNotFoundWhenRetrieveNonexistentId() {
         when(brandRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -81,7 +76,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void deveResponderCreatedELocationQuandoCadastrarMarca() {
+    void shouldReturnCreatedAndLocationWhenCreateBrand() {
         Brand nova = new Brand("Ferrari");
 
         when(brandRepository.save(nova))
@@ -98,7 +93,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void deveAlterarNomeQuandoMarcaExistir() {
+    void shouldUpdateBrandWhenExists() {
         Brand audi = new Brand(1L, "Audi");
 
         when(brandRepository.findById(1L))
@@ -112,7 +107,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void naoDeveAlterarMarcaInexistente() {
+    void shouldNotUpdateBrandWhenDoesNotExist() {
         when(brandRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -121,7 +116,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void deveDeletarMarcaExistente() {
+    void shouldDeleteBrandWithExists() {
         Brand audi = new Brand(1l, "Audi");
 
         when(brandRepository.findById(1L))
@@ -133,7 +128,7 @@ class BrandControllerTest {
     }
 
     @Test
-    void naoDeveDeletarMarcaInexistente() {
+    void shouldNotDeleteBrandWhenDoesNotExist() {
         when(brandRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
