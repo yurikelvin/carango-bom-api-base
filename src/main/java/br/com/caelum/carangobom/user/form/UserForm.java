@@ -10,9 +10,12 @@ public class UserForm {
 
     @NotEmpty
     @NotNull
-    @Size(min = 3, max = 50, message = "O nome de usuário deve ser maior que {min} e menor que {max}")
+    @Size(min = 3, max = 100, message = "O nome de usuário deve ser maior que {min} e menor que {max}")
     private String username;
 
+    @NotEmpty
+    @NotNull
+    @Size(min = 3, max = 50, message = "A senha deve ser maior que {min} e menor que {max}")
     private String password;
 
     public String getUsername() {
@@ -29,6 +32,9 @@ public class UserForm {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserForm() {
     }
 
     public UserForm(String username, String password) {
