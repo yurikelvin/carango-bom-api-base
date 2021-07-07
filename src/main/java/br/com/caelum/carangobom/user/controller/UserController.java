@@ -1,6 +1,5 @@
 package br.com.caelum.carangobom.user.controller;
 
-import br.com.caelum.carangobom.marca.MarcaRepository;
 import br.com.caelum.carangobom.user.dto.UserDTO;
 import br.com.caelum.carangobom.user.form.UserForm;
 import br.com.caelum.carangobom.user.model.User;
@@ -13,8 +12,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -28,8 +25,7 @@ public class UserController {
     }
 
 
-    @RequestMapping("/users")
-    @PostMapping
+    @PostMapping("/users")
     @Transactional
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder){
         User user = userForm.convert();
@@ -38,13 +34,5 @@ public class UserController {
 
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(new UserDTO(user));
-    }
-
-    @GetMapping("/users")
-    @ResponseBody
-    @Transactional
-    public List<UserDTO> listUsers() {
-        List<User> userList = userRepository.findAll();
-        return UserDTO.convert(userList);
     }
 }

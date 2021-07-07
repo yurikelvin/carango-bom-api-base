@@ -1,7 +1,6 @@
 package br.com.caelum.carangobom.user.form;
 
 import br.com.caelum.carangobom.user.model.User;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
