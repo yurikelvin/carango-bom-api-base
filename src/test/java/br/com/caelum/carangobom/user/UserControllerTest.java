@@ -4,6 +4,7 @@ import br.com.caelum.carangobom.user.controller.UserController;
 import br.com.caelum.carangobom.user.form.UserForm;
 import br.com.caelum.carangobom.user.model.User;
 import br.com.caelum.carangobom.user.repository.UserRepository;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -47,4 +48,40 @@ import static org.mockito.MockitoAnnotations.openMocks;
             Mockito.verifyNoInteractions(userRepository.save(user));
         }catch (Exception e){}
     }
+
+     @Test
+      void shouldIncrementUserForm() {
+         UserForm userForm = new UserForm();
+
+         userForm.setUsername("username");
+         userForm.setPassword("password");
+
+         Assert.assertEquals("username", userForm.getUsername());
+         Assert.assertEquals("password", userForm.getPassword());
+     }
+
+     @Test
+     void shouldTestIncrementUserWithoutConstructor() {
+         Mockito.mock(User.class);
+         User newUser = new User();
+
+         newUser.setId(1L);
+         newUser.setUsername("username");
+         newUser.setPassword("password");
+
+         Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
+         Assert.assertEquals("username", newUser.getUsername());
+         Assert.assertEquals("password", newUser.getPassword());
+     }
+
+     @Test
+     void shouldTestIncrementUserWithConstructor() {
+         Mockito.mock(User.class);
+         User newUser = new User(1L, "username", "password");
+
+         Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
+         Assert.assertEquals("username", newUser.getUsername());
+         Assert.assertEquals("password", newUser.getPassword());
+     }
+
 }
