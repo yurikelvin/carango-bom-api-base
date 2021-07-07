@@ -13,18 +13,25 @@ public class User {
 
     @Column(unique = true)
     @NotBlank(message = "Nome de usuário é um campo obrigatório")
-    @Size(min = 3, max = 100)
+    @Size(min = 3, max = 100, message = "O nome de usuário deve ser menor que {min} e menor que {max}")
     private String username;
 
     @NotBlank(message = "Senha é um campo obrigatório")
-    @Size(min = 6, max = 50)
+    @Size(min = 6, max = 50, message = "A senha deve ser menor que {min} e menor que {max}")
     private String password;
-
-    public User(){}
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(Long id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+    public User() {
     }
 
     public Long getId() {
