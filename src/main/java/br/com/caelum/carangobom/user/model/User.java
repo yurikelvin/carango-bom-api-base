@@ -20,11 +20,19 @@ public class User {
     @Size(min = 6, max = 50, message = "A senha deve ser menor que {min} e menor que {max}")
     private String password;
 
-    public User(){}
-
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(Long id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+
+    public User(User user) {
     }
 
     public Long getId() {
