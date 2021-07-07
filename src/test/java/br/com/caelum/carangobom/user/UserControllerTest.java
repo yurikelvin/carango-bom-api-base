@@ -50,6 +50,17 @@ import static org.mockito.MockitoAnnotations.openMocks;
     }
 
      @Test
+      void shouldIncrementUserForm() {
+         UserForm userForm = new UserForm();
+
+         userForm.setUsername("username");
+         userForm.setPassword("password");
+
+         Assert.assertEquals("username", userForm.getUsername());
+         Assert.assertEquals("password", userForm.getPassword());
+     }
+
+     @Test
      void shouldTestIncrementUserWithoutConstructor() {
          Mockito.mock(User.class);
          User newUser = new User();
