@@ -1,6 +1,4 @@
-package br.com.caelum.carangobom.user.dto;
-
-import br.com.caelum.carangobom.user.model.User;
+package br.com.caelum.carangobom.user;
 
 import java.util.List;
 import java.util.stream.Collectors;
