@@ -50,7 +50,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
     }
 
      @Test
-     void shouldTestIncrementUser() {
+     void shouldTestIncrementUserWithoutConstructor() {
          Mockito.mock(User.class);
          User newUser = new User();
 
@@ -58,6 +58,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
          newUser.setUsername("username");
          newUser.setPassword("password");
 
+         Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
          Assert.assertEquals("username", newUser.getUsername());
          Assert.assertEquals("password", newUser.getPassword());
      }
