@@ -40,7 +40,7 @@ public class SpringUserControllerTest {
     public void shouldReturnErrorWhenDoesNotHaveUsername() throws Exception {
         URI uri = new URI("/users");
 
-        String json = "{\"username\": \"username\", \"password\": \"newpassword\"}";
+        String json = "{\"username\": \"\", \"password\": \"newpassword\"}";
 
 
         mockMvc.perform(MockMvcRequestBuilders
