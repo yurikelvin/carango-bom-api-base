@@ -4,6 +4,7 @@ import br.com.caelum.carangobom.user.controller.UserController;
 import br.com.caelum.carangobom.user.form.UserForm;
 import br.com.caelum.carangobom.user.model.User;
 import br.com.caelum.carangobom.user.repository.UserRepository;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -47,4 +48,15 @@ import static org.mockito.MockitoAnnotations.openMocks;
             Mockito.verifyNoInteractions(userRepository.save(user));
         }catch (Exception e){}
     }
+
+     @Test
+     public void shouldIncrementUserForm() {
+         UserForm userForm = new UserForm();
+
+         userForm.setUsername("username");
+         userForm.setPassword("password");
+
+         Assert.assertEquals(userForm.getUsername(), "username");
+         Assert.assertEquals(userForm.getPassword(), "password");
+     }
 }
