@@ -50,13 +50,13 @@ import static org.mockito.MockitoAnnotations.openMocks;
     }
 
      @Test
-     public void shouldIncrementUserForm() {
+      void shouldIncrementUserForm() {
          UserForm userForm = new UserForm();
 
          userForm.setUsername("username");
          userForm.setPassword("password");
 
-         Assert.assertEquals(userForm.getUsername(), "username");
-         Assert.assertEquals(userForm.getPassword(), "password");
+         Assert.assertEquals("username", userForm.getUsername());
+         Assert.assertEquals("password", userForm.getPassword());
      }
 }
