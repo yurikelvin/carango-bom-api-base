@@ -2,8 +2,6 @@ package br.com.caelum.carangobom.vehicle;
 
 import java.net.URI;
 
-import javax.persistence.EntityManager;
-
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -67,18 +65,4 @@ class SpringVehicleControllerTest {
 	                .contentType(MediaType.APPLICATION_JSON))
 	                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
 	    }
-	//
-//	    @Test
-//	    public void shouldReturnErrorWhenDoesNotHavePassword() throws Exception {
-//	        URI uri = new URI("/users");
-	//
-//	        String json = "{\"username\": \"username\", \"password\": \"\"}";
-	//
-//	        mockMvc.perform(MockMvcRequestBuilders
-//	                .post(uri)
-//	                .content(json)
-//	                .contentType(MediaType.APPLICATION_JSON))
-//	                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
-//	    }
-
 }
