@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -53,5 +54,20 @@ public class UserRepositoryTest {
             User userForm = repository.saveAndFlush(converted2);
         }catch (Exception e){
         }
+    }
+
+    @Test
+    public void shouldListAllUsers(){
+        UserForm userForm_1 = new UserForm("username", "password");
+        UserForm userForm_2 = new UserForm("new_username", "password");
+        User converted_user_1 = userForm_1.convert();
+        User converted_user_2 = userForm_2.convert();
+
+        entityManager.persist(converted_user_1);
+        entityManager.persist(converted_user_2);
+
+        List<User> all_users = repository.findAll();
+
+        Assert.assertEquals(2, all_users.size() );
     }
 }

@@ -1,107 +1,78 @@
 package br.com.caelum.carangobom.user;
 
-import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.persistence.EntityManager;
+import java.net.URI;
 
-import java.util.List;
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+public class UserControllerTest {
 
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
-
-class UserControllerTest {
-
-    private UserController userController;
-    private UriComponentsBuilder uriBuilder;
-    private EntityManager entityManager;
-
-
-    @Mock
-    private UserRepository userRepository;
-
-    @BeforeEach
-    public void configuraMock() {
-        openMocks(this);
-
-        userController = new UserController(userRepository);
-        uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
-    }
-
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
-    void shouldNotCreateANewUser() {
-        UserForm userForm = new UserForm("1", "sssssss");
-        User user = userForm.convert();
+    public void shouldCreateANewUser() throws Exception {
+        URI uri = new URI("/users");
 
-        when(
-                userController.create(userForm, uriBuilder)
-        ).thenThrow(RuntimeException.class);
+        String json = "{\"username\": \"username\", \"password\": \"newpassword\"}";
 
-        try {
-            Mockito.verifyNoInteractions(userRepository.save(user));
-        } catch (Exception e) {
-        }
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
     @Test
-    void shouldIncrementUserForm() {
-        UserForm userForm = new UserForm();
+    public void shouldReturnErrorWhenDoesNotHaveUsername() throws Exception {
+        URI uri = new URI("/users");
 
-        userForm.setUsername("username");
-        userForm.setPassword("password");
+        String json = "{\"username\": \"\", \"password\": \"newpassword\"}";
 
-        Assert.assertEquals("username", userForm.getUsername());
-        Assert.assertEquals("password", userForm.getPassword());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     @Test
-    void shouldTestIncrementUserWithoutConstructor() {
-        Mockito.mock(User.class);
-        User newUser = new User();
+    public void shouldReturnErrorWhenDoesNotHavePassword() throws Exception {
+        URI uri = new URI("/users");
 
-        newUser.setId(1L);
-        newUser.setUsername("username");
-        newUser.setPassword("password");
+        String json = "{\"username\": \"username\", \"password\": \"\"}";
 
-        Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
-        Assert.assertEquals("username", newUser.getUsername());
-        Assert.assertEquals("password", newUser.getPassword());
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     @Test
-    void shouldTestIncrementUserWithConstructor() {
-        Mockito.mock(User.class);
-        User newUser = new User(1L, "username", "password");
+    public void shouldReturnTheListOfUsers() throws Exception {
 
-        Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
-        Assert.assertEquals("username", newUser.getUsername());
-        Assert.assertEquals("password", newUser.getPassword());
-    }
+        URI uri = new URI("/users");
 
-    @Test
-    void souldTestUserDTO() {
-        User newUser = new User(1L, "username", "password");
-        Mockito.mock(UserDTO.class);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
-        UserDTO userDTO = new UserDTO(newUser);
-
-        Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
-        Assert.assertEquals(newUser.getPassword(), userDTO.getPassword());
-    }
-
-    @Test
-    void souldTestUserDTO_Convert() {
-        List<User> userList = List.of(
-                new User(1L, "username1", "password1"),
-                new User(2L, "username2", "password2")
-        );
-
-        List<UserDTO> userConvertDTO = UserDTO.convert(userList);
-        Assert.assertEquals(userConvertDTO.size(), userList.size());
     }
 }
