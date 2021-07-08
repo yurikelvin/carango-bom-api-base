@@ -116,7 +116,7 @@ class UserUnitTest {
 
         when(userRepository.findAll()).thenReturn(userList);
 
-        List<User> userListController = userRepository.findAll();
+        List<UserDTO> userListController = userController.listAll();
 
         assertEquals(userList.size(),userListController.size());
     }
