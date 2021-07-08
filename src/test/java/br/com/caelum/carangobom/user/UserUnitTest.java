@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -104,5 +105,19 @@ class UserUnitTest {
 
         List<UserDTO> userConvertDTO = UserDTO.convert(userList);
         Assert.assertEquals(userConvertDTO.size(), userList.size());
+    }
+
+    @Test
+    void shouldTestListAll() {
+        List<User> userList = List.of(
+                new User(1L, "username1", "password1"),
+                new User(2L, "username2", "password2")
+        );
+
+        when(userRepository.findAll()).thenReturn(userList);
+
+        List<User> userListController = userRepository.findAll();
+
+        assertEquals(userList.size(),userListController.size());
     }
 }
