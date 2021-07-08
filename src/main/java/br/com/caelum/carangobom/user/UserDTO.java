@@ -24,6 +24,5 @@ public class UserDTO {
 
     public static List<UserDTO> convert(List<User> users) {
         return users.stream().map(UserDTO::new).collect(Collectors.toList());
-
     }
 }
