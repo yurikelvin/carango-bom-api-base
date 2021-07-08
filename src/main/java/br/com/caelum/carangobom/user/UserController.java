@@ -8,6 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -21,9 +22,15 @@ public class UserController {
     }
 
 
+    @GetMapping("/users")
+    public List<UserDTO> listAll() {
+        List<User> users = userRepository.findAll();
+        return UserDTO.convert(users);
+    }
+
     @PostMapping("/users")
     @Transactional
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder){
+    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
         User user = userForm.convert();
 
         userRepository.save(user);
