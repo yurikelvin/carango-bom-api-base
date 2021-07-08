@@ -1,9 +1,5 @@
-package br.com.caelum.carangobom.user.controller;
+package br.com.caelum.carangobom.user;
 
-import br.com.caelum.carangobom.user.dto.UserDTO;
-import br.com.caelum.carangobom.user.form.UserForm;
-import br.com.caelum.carangobom.user.model.User;
-import br.com.caelum.carangobom.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

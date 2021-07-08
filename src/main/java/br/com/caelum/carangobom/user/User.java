@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom.user.model;
+package br.com.caelum.carangobom.user;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
