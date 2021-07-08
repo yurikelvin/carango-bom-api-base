@@ -1,9 +1,5 @@
 package br.com.caelum.carangobom.user;
 
-import br.com.caelum.carangobom.user.controller.UserController;
-import br.com.caelum.carangobom.user.form.UserForm;
-import br.com.caelum.carangobom.user.model.User;
-import br.com.caelum.carangobom.user.repository.UserRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
