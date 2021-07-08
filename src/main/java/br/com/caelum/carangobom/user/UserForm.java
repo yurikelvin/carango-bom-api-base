@@ -1,6 +1,4 @@
-package br.com.caelum.carangobom.user.form;
-
-import br.com.caelum.carangobom.user.model.User;
+package br.com.caelum.carangobom.user;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
