@@ -7,8 +7,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.persistence.EntityManager;
-
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -18,7 +16,7 @@ class UserControllerTest {
 
     private UserController userController;
     private UriComponentsBuilder uriBuilder;
-    private EntityManager entityManager;
+//    private EntityManager entityManager;
 
 
     @Mock
