@@ -68,6 +68,6 @@ public class UserRepositoryTest {
 
         List<User> all_users = repository.findAll();
 
-        Assert.assertEquals(all_users.size(),2 );
+        Assert.assertEquals(2, all_users.size() );
     }
 }
