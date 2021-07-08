@@ -75,16 +75,4 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
     }
-
-    @Test
-    public void shouldReturnOnlyOneUser() throws Exception {
-
-        URI uri = new URI("/users/8");
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .get(uri)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
-
-    }
 }

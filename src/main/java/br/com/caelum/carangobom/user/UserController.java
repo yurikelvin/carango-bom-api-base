@@ -8,9 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -25,7 +23,7 @@ public class UserController {
 
 
     @GetMapping("/users")
-    public List<UserDTO> list_all_users() {
+    public List<UserDTO> listAll() {
         List<User> users = userRepository.findAll();
         return UserDTO.convert(users);
     }
