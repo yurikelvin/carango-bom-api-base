@@ -84,18 +84,19 @@ class UserUnitTest {
     }
 
     @Test
-    void souldTestUserDTO() {
+    void shouldTestUserDTO() {
         User newUser = new User(1L, "username", "password");
         Mockito.mock(UserDTO.class);
 
         UserDTO userDTO = new UserDTO(newUser);
 
+        Assert.assertEquals(newUser.getId(), userDTO.getId());
         Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
         Assert.assertEquals(newUser.getPassword(), userDTO.getPassword());
     }
 
     @Test
-    void souldTestUserDTO_Convert() {
+    void shouldTestUserDTO_Convert() {
         List<User> userList = List.of(
                 new User(1L, "username1", "password1"),
                 new User(2L, "username2", "password2")
