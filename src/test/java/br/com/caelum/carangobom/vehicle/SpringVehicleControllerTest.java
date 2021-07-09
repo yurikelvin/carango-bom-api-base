@@ -27,8 +27,48 @@ class SpringVehicleControllerTest {
 
 		@Autowired
 		private BrandRepository brandRepository;
+		@Autowired
+		private VehicleRepository vehicleRepository;
 	    @Autowired
 	    private MockMvc mockMvc;
+	    
+	    @Test
+	    public void shouldReturn400WhenTryUpdateVehicleWithNonexistentBrandId() throws Exception {
+	    	Brand brand = brandRepository.save(new Brand("Audi"));
+   	    	Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
+   	    	
+	    	URI uri = new URI("/vehicles/" + vehicle.getId());
+	        
+	        JSONObject body = new JSONObject();
+	        body.put("model", "TT");
+	        body.put("brandId", 9999);
+	        body.put("year", 2012);
+	        
+	        mockMvc.perform(MockMvcRequestBuilders
+	                .put(uri)
+	                .content(body.toString())
+	                .contentType(MediaType.APPLICATION_JSON))
+	                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+	    }
+	    
+	    @Test
+	    public void shouldUpdateVehicleIfRecivedCorrectParameters() throws Exception {
+	    	Brand brand = brandRepository.save(new Brand("Audi"));
+	    	Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
+	    	
+	    	URI uri = new URI("/vehicles/" + vehicle.getId());
+	    	
+	    	JSONObject body = new JSONObject();
+	    	body.put("model", "TT");
+	    	body.put("brandId", brand.getId());
+	    	body.put("year", 2012);
+	    	
+	    	mockMvc.perform(MockMvcRequestBuilders
+	    			.put(uri)
+	    			.content(body.toString())
+	    			.contentType(MediaType.APPLICATION_JSON))
+	    			.andExpect(MockMvcResultMatchers.status().isOk());
+	    }
 	    
 	    @Test
 	    public void shouldCreateANewVehicle() throws Exception {
@@ -46,7 +86,7 @@ class SpringVehicleControllerTest {
 	                .post(uri)
 	                .content(body.toString())
 	                .contentType(MediaType.APPLICATION_JSON))
-	                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+	                .andExpect(MockMvcResultMatchers.status().isCreated());
 	    }
 
 	    @Test
@@ -63,6 +103,7 @@ class SpringVehicleControllerTest {
 	                .post(uri)
 	                .content(body.toString())
 	                .contentType(MediaType.APPLICATION_JSON))
-	                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+	                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 	    }
+	    
 }

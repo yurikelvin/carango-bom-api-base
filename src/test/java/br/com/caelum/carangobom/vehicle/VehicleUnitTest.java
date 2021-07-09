@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.caelum.carangobom.brand.Brand;
 import br.com.caelum.carangobom.brand.BrandRepository;
-import br.com.caelum.carangobom.brand.NotFoundBrandException;
+import br.com.caelum.carangobom.brand.BadRequestException;
 
 import org.junit.Assert;
 
@@ -22,7 +22,7 @@ class VehicleUnitTest {
     private BrandRepository brandRepository;
 
     @Test
-    void souldConvertVehicleFormToVehicleIfBrandExist() {
+    void souldConvertVehicleFormToVehicleIfBrandExist() throws Exception {
     	
     	Brand brand = new Brand("Audi");
     	
@@ -45,7 +45,7 @@ class VehicleUnitTest {
     	
     	VehicleForm vehicleForm = new VehicleForm(1L, "TT", 2012);
           
-        Assert.assertThrows(NotFoundBrandException.class, () -> vehicleForm.toVehicle(brandRepository));
+        Assert.assertThrows(BadRequestException.class, () -> vehicleForm.toVehicle(brandRepository));
 		
     }
 }

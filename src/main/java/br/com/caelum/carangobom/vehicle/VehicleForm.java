@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import br.com.caelum.carangobom.brand.Brand;
 import br.com.caelum.carangobom.brand.BrandRepository;
-import br.com.caelum.carangobom.brand.NotFoundBrandException;
+import br.com.caelum.carangobom.brand.BadRequestException;
 
 
 public class VehicleForm {
@@ -52,7 +52,7 @@ public class VehicleForm {
 		if (optional.isPresent()) {
 			return new Vehicle(optional.get(), year, model);
 		}
-		throw new NotFoundBrandException();
+		throw new BadRequestException("Brand not found!");
 	}
 
 }

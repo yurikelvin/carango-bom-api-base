@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 
 import java.net.URI;
 
+import br.com.caelum.carangobom.brand.BadRequestException;
 import br.com.caelum.carangobom.brand.BrandRepository;
 import br.com.caelum.carangobom.validacao.ErroDeParametroOutputDto;
 import br.com.caelum.carangobom.validacao.ListaDeErrosOutputDto;
@@ -67,28 +68,31 @@ public class VehicleController {
 
 	    @PostMapping
 	    @Transactional
-	    public ResponseEntity<Vehicle> save(@Valid @RequestBody VehicleForm vehicleForm, UriComponentsBuilder uriBuilder) {
-	    	
-	    	Vehicle vehicle = vehicleRepository.save(vehicleForm.toVehicle(brandRepository));
-	        URI uri = uriBuilder.path("/vehicles/{id}").buildAndExpand(vehicle.getId()).toUri();
-	        return ResponseEntity.created(uri).body(vehicle);
+	    public ResponseEntity<Vehicle> save(@Valid @RequestBody VehicleForm vehicleForm, UriComponentsBuilder uriBuilder) throws Exception {
+	    	Vehicle vehicle = vehicleForm.toVehicle(brandRepository);
+	    	Vehicle saveVehicle = vehicleRepository.save(vehicle);
+	        URI uri = uriBuilder.path("/vehicles/{id}").buildAndExpand(saveVehicle.getId()).toUri();
+	        return ResponseEntity.created(uri).body(saveVehicle);
 	    }
 
 	    @PutMapping("/{id}")
 	    @Transactional
-	    public ResponseEntity<Vehicle> update(@PathVariable Long id, @Valid @RequestBody Vehicle vehicleForm) {
+	    public ResponseEntity<Vehicle> update(@PathVariable Long id, @Valid @RequestBody VehicleForm vehicleForm) {
+	    	
 	        Optional<Vehicle> optional = vehicleRepository.findById(id);
+	        Vehicle v = vehicleForm.toVehicle(brandRepository);
+	        
 	        if (optional.isPresent()) {
 	        	
 	            Vehicle vehicle = optional.get();
-	            vehicle.setModel(vehicleForm.getModel());
-	            vehicle.setBrand(vehicleForm.getBrand());
-	            vehicle.setYear(vehicleForm.getYear());
+	            vehicle.setModel(v.getModel());
+	            vehicle.setBrand(v.getBrand());
+	            vehicle.setYear(v.getYear());
 	            return ResponseEntity.ok(vehicle);
 	            
-	        } else {
-	            return ResponseEntity.notFound().build();
-	        }
+	        } 
+	        
+	        throw new BadRequestException("Vehicle not found!");
 	    }
 
 	    @DeleteMapping("/{id}")
