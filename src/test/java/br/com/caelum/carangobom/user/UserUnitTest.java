@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
@@ -33,20 +35,16 @@ class UserUnitTest {
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
     }
 
-
     @Test
     void shouldNotCreateANewUser() {
-        UserForm userForm = new UserForm("1", "sssssss");
+        UserForm userForm = new UserForm("1", "validaPassword");
         User user = userForm.convert();
 
-        when(
-                userController.create(userForm, uriBuilder)
-        ).thenThrow(RuntimeException.class);
+        when(userRepository.save(user)).thenReturn(user);
 
         try {
-            Mockito.verifyNoInteractions(userRepository.save(user));
-        } catch (Exception e) {
-        }
+            ResponseEntity<?> controllerUser = userController.create(userForm, uriBuilder);
+        }catch (Exception e){}
     }
 
     @Test

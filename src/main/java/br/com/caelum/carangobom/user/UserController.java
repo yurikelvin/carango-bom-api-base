@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -21,7 +22,6 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-
     @GetMapping("/users")
     public List<UserDTO> listAll() {
         List<User> users = userRepository.findAll();
@@ -30,11 +30,26 @@ public class UserController {
 
     @PostMapping("/users")
     @Transactional
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
         User user = userForm.convert();
 
-        userRepository.save(user);
+        if (user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
+            String jsonError = "{\"message\": \"Usuário e senha são dadoos obrigatórios\"}";
+            return new ResponseEntity<>(
+                    jsonError,
+                    HttpStatus.BAD_REQUEST);
+        }
 
+        List<User> isCreated = userRepository.findByUsername(user.getUsername());
+
+        if (isCreated.size() > 0) {
+            String jsonError = "{\"message\": \"Usuário já cadastrado na base de dados\"}";
+            return new ResponseEntity<>(
+                    jsonError,
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        userRepository.save(user);
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(new UserDTO(user));
     }
