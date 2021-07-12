@@ -166,9 +166,12 @@ class UserUnitTest {
     @Test
     void shouldDeleteUserWithPathId(){
         User newUser = new User(1L, "username1", "password1");
+
         when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
 
-        Assert.assertEquals(ResponseEntity.ok().build().getStatusCodeValue(), 200);
+        ResponseEntity<UserWithoutPasswordDTO> userControllerDelete = userController.delete(1L);
+
+        Assert.assertEquals(userControllerDelete.getStatusCodeValue(), 200);
     }
 
     @Test
