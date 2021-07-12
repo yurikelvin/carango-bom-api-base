@@ -11,8 +11,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.net.URI;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -23,18 +25,36 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private UserRepository repository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    public void shouldReturnTheListOfUser() throws Exception {
+        URI uri = new URI("/users");
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+    }
+
+    @Transactional
     @Test
-    public void shouldCreateANewUser() throws Exception {
+    public void shouldNotCreateANewUserWithTheSameUsername() throws Exception {
         URI uri = new URI("/users");
 
+        UserForm newUserForm = new UserForm("username", "password");
+        User converted = newUserForm.convert();
+        entityManager.persist(converted);
+        entityManager.flush();
+
         String json = "{\"username\": \"username\", \"password\": \"newpassword\"}";
-
-
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test
@@ -43,12 +63,12 @@ public class UserControllerTest {
 
         String json = "{\"username\": \"\", \"password\": \"newpassword\"}";
 
-
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
     }
 
     @Test
@@ -68,11 +88,26 @@ public class UserControllerTest {
     public void shouldReturnTheListOfUsers() throws Exception {
 
         URI uri = new URI("/users");
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+    }
+
+    @Transactional
+    @Test
+    public void shouldFindUserById() throws Exception {
+        UserForm newUserForm = new UserForm("username", "password");
+        User converted = newUserForm.convert();
+        entityManager.persist(converted);
+        entityManager.flush();
+
+        URI uri = new URI("/users/" + converted.getId());
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
-
+                .andExpect(MockMvcResultMatchers.status().is(200));
     }
 }

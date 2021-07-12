@@ -1,10 +1,15 @@
 package br.com.caelum.carangobom.user;
 
+import br.com.caelum.carangobom.exception.BadRequestException;
+import javassist.NotFoundException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
@@ -21,7 +26,6 @@ class UserUnitTest {
     private UriComponentsBuilder uriBuilder;
     private EntityManager entityManager;
 
-
     @Mock
     private UserRepository userRepository;
 
@@ -33,20 +37,30 @@ class UserUnitTest {
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
     }
 
-
     @Test
-    void shouldNotCreateANewUser() {
-        UserForm userForm = new UserForm("1", "sssssss");
+    void shouldCreateANewUser(){
+        UserForm userForm = new UserForm("1", "validaPassword");
         User user = userForm.convert();
 
-        when(
-                userController.create(userForm, uriBuilder)
-        ).thenThrow(RuntimeException.class);
+        when(userRepository.save(user)).thenReturn(user);
 
-        try {
-            Mockito.verifyNoInteractions(userRepository.save(user));
-        } catch (Exception e) {
-        }
+        ResponseEntity<UserDTO> createUserContorller = userController.create(userForm, uriBuilder);
+
+        Assert.assertEquals(createUserContorller.getBody().getId(), user.getId());
+        Assert.assertEquals(createUserContorller.getBody().getUsername(), user.getUsername());
+        Assert.assertEquals(createUserContorller.getBody().getPassword(), user.getPassword());
+    }
+
+    @Test
+    void shouldNotCreateANewUserWithTheSameUsername() {
+        UserForm userForm = new UserForm("1", "validaPassword");
+        User user = userForm.convert();
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(new User(2L, "username123", "odksaod"));
+
+        Assert.assertThrows(BadRequestException.class, () -> {
+            userController.create(userForm, uriBuilder);
+        });
     }
 
     @Test
@@ -116,8 +130,36 @@ class UserUnitTest {
 
         when(userRepository.findAll()).thenReturn(userList);
 
-        List<UserDTO> userListController = userController.listAll();
+        List<UserWithoutPasswordDTO> userListController = userController.listAll();
 
         assertEquals(userList.size(),userListController.size());
+    }
+
+    @Test
+    void shouldFindUserWithPathId(){
+        User newUser = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
+        ResponseEntity<UserWithoutPasswordDTO> findById = userController.details(1L);
+        Assert.assertEquals(findById.getBody().getId(), newUser.getId());
+        Assert.assertEquals(findById.getBody().getUsername(), newUser.getUsername());
+    }
+
+    @Test
+    void shouldNotFindUserWithInvalidPathId(){
+        Assert.assertThrows(BadRequestException.class, () -> {
+            userController.details(1L);
+        });
+    }
+
+
+    @Test
+    void shouldReceiveTheUserFormValues(){
+        User newUser = new User(1L, "username", "password");
+        Mockito.mock(UserWithoutPasswordDTO.class);
+
+        UserWithoutPasswordDTO userDTO = new UserWithoutPasswordDTO(newUser);
+
+        Assert.assertEquals(newUser.getId(), userDTO.getId());
+        Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
     }
 }

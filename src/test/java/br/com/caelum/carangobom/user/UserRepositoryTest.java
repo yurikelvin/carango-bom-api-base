@@ -35,7 +35,6 @@ public class UserRepositoryTest {
         Assert.assertNotNull(userForm);
     }
 
-
     @Test
     public void shouldNotCreateDuplicatedUsers(){
         UserForm newUserForm = new UserForm();

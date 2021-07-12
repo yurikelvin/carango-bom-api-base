@@ -2,8 +2,12 @@
 <section name="Workbench">
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+<<<<<<< HEAD
+			<item value="/Users/luan.carlos/projects/acelera/carango-bom-api-base"/>
+=======
 			<item value="/Users/schappo/thoughtworks/acelera/carango/api"/>
 			<item value="/Users/schappo/thoughtworks/acelera/carango"/>
+>>>>>>> f435031e122f728fbeea9c35539cc4078b4e6fea
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
