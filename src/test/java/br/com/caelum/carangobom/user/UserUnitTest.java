@@ -52,7 +52,7 @@ class UserUnitTest {
     void shouldIncrementUserForm() {
         UserForm userForm = new UserForm();
 
-        userForm.setUsername("");
+        userForm.setUsername("username");
         userForm.setPassword("password");
 
         Assert.assertEquals("username", userForm.getUsername());
@@ -115,8 +115,19 @@ class UserUnitTest {
 
         when(userRepository.findAll()).thenReturn(userList);
 
-        List<UserDTO> userListController = userController.listAll();
+        List<UserWithoutPasswordDTO> userListController = userController.listAll();
 
         assertEquals(userList.size(),userListController.size());
+    }
+
+    @Test
+    void shouldReceiveTheUserFormValues(){
+        User newUser = new User(1L, "username", "password");
+        Mockito.mock(UserWithoutPasswordDTO.class);
+
+        UserWithoutPasswordDTO userDTO = new UserWithoutPasswordDTO(newUser);
+
+        Assert.assertEquals(newUser.getId(), userDTO.getId());
+        Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
     }
 }

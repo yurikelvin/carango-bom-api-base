@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -24,10 +25,19 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<UserDTO> listAll() {
+    public List<UserWithoutPasswordDTO> listAll() {
         // TODO create the user pagination
         List<User> users = userRepository.findAll();
-        return UserDTO.convert(users);
+        return UserWithoutPasswordDTO.convert(users);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserWithoutPasswordDTO>details(@PathVariable Long id){
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            return ResponseEntity.ok(new UserWithoutPasswordDTO(user.get()));
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/users")

@@ -9,15 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 
 @RunWith(SpringRunner.class)
@@ -92,5 +88,21 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
+    }
+
+    @Transactional
+    @Test
+    public void shouldFindUserById() throws Exception {
+        UserForm newUserForm = new UserForm("username", "password");
+        User converted = newUserForm.convert();
+        entityManager.persist(converted);
+        entityManager.flush();
+
+        URI uri = new URI("/users/" + converted.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 }
