@@ -37,12 +37,12 @@ public class UserController {
         if(user.isPresent()){
             return ResponseEntity.ok(new UserWithoutPasswordDTO(user.get()));
         }
-        return ResponseEntity.notFound().build();
+        throw new BadRequestException("Usuário informado não é válido");
     }
 
     @PostMapping("/users")
     @Transactional
-    public ResponseEntity<?> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
         User user = userForm.convert();
 
         // TODO - Create a service to validate user

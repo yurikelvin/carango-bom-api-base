@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
+import javassist.NotFoundException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,20 @@ class UserUnitTest {
 
         userController = new UserController(userRepository);
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
+    }
+
+    @Test
+    void shouldCreateANewUser(){
+        UserForm userForm = new UserForm("1", "validaPassword");
+        User user = userForm.convert();
+
+        when(userRepository.save(user)).thenReturn(user);
+
+        ResponseEntity<UserDTO> createUserContorller = userController.create(userForm, uriBuilder);
+
+        Assert.assertEquals(createUserContorller.getBody().getId(), user.getId());
+        Assert.assertEquals(createUserContorller.getBody().getUsername(), user.getUsername());
+        Assert.assertEquals(createUserContorller.getBody().getPassword(), user.getPassword());
     }
 
     @Test
@@ -119,6 +134,23 @@ class UserUnitTest {
 
         assertEquals(userList.size(),userListController.size());
     }
+
+    @Test
+    void shouldFindUserWithPathId(){
+        User newUser = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
+        ResponseEntity<UserWithoutPasswordDTO> findById = userController.details(1L);
+        Assert.assertEquals(findById.getBody().getId(), newUser.getId());
+        Assert.assertEquals(findById.getBody().getUsername(), newUser.getUsername());
+    }
+
+    @Test
+    void shouldNotFindUserWithInvalidPathId(){
+        Assert.assertThrows(BadRequestException.class, () -> {
+            userController.details(1L);
+        });
+    }
+
 
     @Test
     void shouldReceiveTheUserFormValues(){
