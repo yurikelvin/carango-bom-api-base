@@ -44,11 +44,10 @@ class UserUnitTest {
 
         when(userRepository.save(user)).thenReturn(user);
 
-        ResponseEntity<UserDTO> createUserContorller = userController.create(userForm, uriBuilder);
+        ResponseEntity<UserWithoutPasswordDTO> createUserContorller = userController.create(userForm, uriBuilder);
 
         Assert.assertEquals(createUserContorller.getBody().getId(), user.getId());
         Assert.assertEquals(createUserContorller.getBody().getUsername(), user.getUsername());
-        Assert.assertEquals(createUserContorller.getBody().getPassword(), user.getPassword());
     }
 
     @Test

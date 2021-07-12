@@ -43,7 +43,7 @@ public class UserController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<UserWithoutPasswordDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
 
         CreateUserService createService = new CreateUserService(userRepository);
 
@@ -52,7 +52,7 @@ public class UserController {
         return createService.createNewUser(user, uriBuilder);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("{id}")
     @Transactional
     public ResponseEntity<UserWithoutPasswordDTO>delete(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);

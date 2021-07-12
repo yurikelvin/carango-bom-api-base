@@ -16,7 +16,7 @@ public class CreateUserService {
         this.repository = repository;
     }
 
-    public  ResponseEntity<UserDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
+    public  ResponseEntity<UserWithoutPasswordDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
 
         User isCreated = repository.findByUsername(user.getUsername());
 
@@ -27,7 +27,7 @@ public class CreateUserService {
 
         repository.save(user);
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UserDTO(user));
+        return ResponseEntity.created(uri).body(new UserWithoutPasswordDTO(user));
 
     }
 }
