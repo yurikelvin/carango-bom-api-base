@@ -62,7 +62,7 @@ public class VehicleController {
 	        if (vehicle.isPresent()) {
 	            return ResponseEntity.ok(vehicle.get());
 	        } else {
-	            return ResponseEntity.notFound().build();
+	            throw new BadRequestException("Vehicle not Found");
 	        }
 	    }
 
@@ -104,7 +104,7 @@ public class VehicleController {
 	            vehicleRepository.delete(vehicle);
 	            return ResponseEntity.ok(vehicle);
 	        } else {
-	            return ResponseEntity.notFound().build();
+	            throw new BadRequestException("Vehicle not Found");
 	        }
 	    }
 
