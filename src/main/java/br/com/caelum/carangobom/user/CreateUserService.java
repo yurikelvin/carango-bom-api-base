@@ -18,7 +18,6 @@ public class CreateUserService {
 
     public  ResponseEntity<UserDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
 
-        // TODO - Create a service to validate user
         User isCreated = repository.findByUsername(user.getUsername());
 
         if (isCreated != null) {
