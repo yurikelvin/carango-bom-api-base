@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
@@ -51,7 +52,7 @@ class UserUnitTest {
     void shouldIncrementUserForm() {
         UserForm userForm = new UserForm();
 
-        userForm.setUsername("username");
+        userForm.setUsername("");
         userForm.setPassword("password");
 
         Assert.assertEquals("username", userForm.getUsername());

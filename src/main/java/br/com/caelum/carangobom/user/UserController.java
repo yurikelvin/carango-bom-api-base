@@ -1,7 +1,8 @@
 package br.com.caelum.carangobom.user;
 
+import br.com.caelum.carangobom.exception.BadRequestException;
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,6 +25,7 @@ public class UserController {
 
     @GetMapping("/users")
     public List<UserDTO> listAll() {
+        // TODO create the user pagination
         List<User> users = userRepository.findAll();
         return UserDTO.convert(users);
     }
@@ -33,20 +35,12 @@ public class UserController {
     public ResponseEntity<?> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
         User user = userForm.convert();
 
-        if (user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
-            String jsonError = "{\"message\": \"Usuário e senha são dadoos obrigatórios\"}";
-            return new ResponseEntity<>(
-                    jsonError,
-                    HttpStatus.BAD_REQUEST);
-        }
-
+        // TODO - Create a service to validate user
         List<User> isCreated = userRepository.findByUsername(user.getUsername());
 
         if (isCreated.size() > 0) {
-            String jsonError = "{\"message\": \"Usuário já cadastrado na base de dados\"}";
-            return new ResponseEntity<>(
-                    jsonError,
-                    HttpStatus.BAD_REQUEST);
+            String errorMessage = "Usuário já cadastrado";
+            throw  new BadRequestException(errorMessage);
         }
 
         userRepository.save(user);
