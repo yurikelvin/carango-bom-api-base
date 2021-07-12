@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.user;
 
+import br.com.caelum.carangobom.exception.BadRequestException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,6 @@ class UserUnitTest {
     private UriComponentsBuilder uriBuilder;
     private EntityManager entityManager;
 
-
     @Mock
     private UserRepository userRepository;
 
@@ -37,15 +37,15 @@ class UserUnitTest {
     }
 
     @Test
-    void shouldNotCreateANewUser() {
+    void shouldNotCreateANewUserWithTheSameUsername() {
         UserForm userForm = new UserForm("1", "validaPassword");
         User user = userForm.convert();
 
-        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(new User(2L, "username123", "odksaod"));
 
-        try {
-            ResponseEntity<?> controllerUser = userController.create(userForm, uriBuilder);
-        }catch (Exception e){}
+        Assert.assertThrows(BadRequestException.class, () -> {
+            userController.create(userForm, uriBuilder);
+        });
     }
 
     @Test

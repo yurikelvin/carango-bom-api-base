@@ -31,9 +31,17 @@ public class UserControllerTest {
     @Autowired
     private EntityManager entityManager;
 
+    public void shouldReturnTheListOfUser() throws Exception {
+        URI uri = new URI("/users");
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+    }
+
     @Transactional
     @Test
-    public void shouldCreateANewUser() throws Exception {
+    public void shouldNotCreateANewUserWithTheSameUsername() throws Exception {
         URI uri = new URI("/users");
 
         UserForm newUserForm = new UserForm("username", "password");
@@ -46,9 +54,7 @@ public class UserControllerTest {
                 .post(uri)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
-
-
+                .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test
@@ -82,11 +88,10 @@ public class UserControllerTest {
     public void shouldReturnTheListOfUsers() throws Exception {
 
         URI uri = new URI("/users");
-
         mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(MockMvcResultMatchers.status().is(200));
 
     }
 
@@ -103,6 +108,6 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(MockMvcResultMatchers.status().is(200));
     }
 }
