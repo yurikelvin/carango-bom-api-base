@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -24,14 +25,14 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public List<UserWithoutPasswordDTO> listAll() {
         // TODO create the user pagination
         List<User> users = userRepository.findAll();
         return UserWithoutPasswordDTO.convert(users);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<UserWithoutPasswordDTO>details(@PathVariable Long id){
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()){
@@ -40,7 +41,7 @@ public class UserController {
         throw new BadRequestException("Usuário informado não é válido");
     }
 
-    @PostMapping("/users")
+    @PostMapping
     @Transactional
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
         User user = userForm.convert();

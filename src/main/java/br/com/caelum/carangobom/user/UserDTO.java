@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserDTO {
-
     private Long id;
     private String username;
     private String password;
@@ -25,7 +24,7 @@ public class UserDTO {
         return password;
     }
 
-    public static List<UserDTO> convert(List<User> users) {
-        return users.stream().map(UserDTO::new).collect(Collectors.toList());
+    public static List<UserWithoutPasswordDTO> convert(List<User> users) {
+        return users.stream().map(UserWithoutPasswordDTO::new).collect(Collectors.toList());
     }
 }

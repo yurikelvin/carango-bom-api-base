@@ -117,15 +117,15 @@ class UserUnitTest {
                 new User(2L, "username2", "password2")
         );
 
-        List<UserDTO> userConvertDTO = UserDTO.convert(userList);
+        List<UserWithoutPasswordDTO> userConvertDTO = UserDTO.convert(userList);
         Assert.assertEquals(userConvertDTO.size(), userList.size());
     }
 
     @Test
     void shouldTestListAll() {
         List<User> userList = List.of(
-                new User(1L, "username1", "password1"),
-                new User(2L, "username2", "password2")
+                new User("user1", "username1"),
+                new User("user2", "username2")
         );
 
         when(userRepository.findAll()).thenReturn(userList);
