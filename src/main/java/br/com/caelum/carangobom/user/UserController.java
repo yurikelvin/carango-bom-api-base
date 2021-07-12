@@ -58,4 +58,17 @@ public class UserController {
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(new UserDTO(user));
     }
+
+    @DeleteMapping("/users/{id}")
+    @Transactional
+    public ResponseEntity<UserWithoutPasswordDTO>delete(@PathVariable Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if(user.isPresent()){
+            userRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+
+        throw new BadRequestException("Usuário informado não é válido");
+    }
 }
