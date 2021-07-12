@@ -162,4 +162,19 @@ class UserUnitTest {
         Assert.assertEquals(newUser.getId(), userDTO.getId());
         Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
     }
+
+    @Test
+    void shouldDeleteUserWithPathId(){
+        User newUser = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
+
+        Assert.assertEquals(ResponseEntity.ok().build().getStatusCodeValue(), 200);
+    }
+
+    @Test
+    void shouldNotDeleteUserWithInvalidPathId(){
+        Assert.assertThrows(BadRequestException.class, () -> {
+            userController.delete(1L);
+        });
+    }
 }
