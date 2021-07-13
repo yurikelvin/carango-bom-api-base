@@ -43,19 +43,12 @@ public class UserController {
     @PostMapping("/users")
     @Transactional
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
+
+        CreateUserService createService = new CreateUserService(userRepository);
+
         User user = userForm.convert();
 
-        // TODO - Create a service to validate user
-        User isCreated = userRepository.findByUsername(user.getUsername());
-
-        if (isCreated != null) {
-            String errorMessage = "Usuário já cadastrado";
-            throw  new BadRequestException(errorMessage);
-        }
-
-        userRepository.save(user);
-        URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UserDTO(user));
+        return createService.createNewUser(user, uriBuilder);
     }
 
     @DeleteMapping("/users/{id}")
