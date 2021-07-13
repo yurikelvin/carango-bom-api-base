@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+@ActiveProfiles("test")
 class UserUnitTest {
 
     private UserController userController;
@@ -56,7 +58,7 @@ class UserUnitTest {
         UserForm userForm = new UserForm("1", "validaPassword");
         User user = userForm.convert();
 
-        when(userRepository.findByUsername(user.getUsername())).thenReturn(new User(2L, "username123", "odksaod"));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(java.util.Optional.of(new User(2L, "username123", "odksaod")));
 
         Assert.assertThrows(BadRequestException.class, () -> {
             userController.create(userForm, uriBuilder);

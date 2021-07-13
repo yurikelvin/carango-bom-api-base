@@ -1,11 +1,17 @@
 package br.com.caelum.carangobom.user;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,6 +25,9 @@ public class User {
     @NotBlank(message = "Senha é um campo obrigatório")
     @Size(min = 6, max = 50, message = "A senha deve ser menor que {min} e menor que {max}")
     private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Profile> profile = new ArrayList<>();
 
     public User(String username, String password) {
         this.username = username;
@@ -57,4 +66,31 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.profile;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
 }

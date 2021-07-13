@@ -46,9 +46,9 @@ public class UserController {
         User user = userForm.convert();
 
         // TODO - Create a service to validate user
-        User isCreated = userRepository.findByUsername(user.getUsername());
+        Optional<User> isCreated = userRepository.findByUsername(user.getUsername());
 
-        if (isCreated != null) {
+        if (isCreated.isPresent()) {
             String errorMessage = "Usuário já cadastrado";
             throw  new BadRequestException(errorMessage);
         }
