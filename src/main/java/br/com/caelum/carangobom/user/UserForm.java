@@ -8,7 +8,7 @@ public class UserForm {
 
     @NotEmpty(message = "Usuário é um campo obrigatório")
     @NotNull
-    @Size(min = 3, max = 100, message = "O nome de usuário deve ser maior que {min} e menor que {max}")
+    @Size(min = 3, message = "O nome de usuário deve ser maior que {min}")
     private String username;
 
     @NotEmpty(message = "A senha é um campo obrigatório")

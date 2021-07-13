@@ -41,7 +41,7 @@ public class UserController {
 
     @PostMapping("/users")
     @Transactional
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<UserWithoutPasswordDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
         CreateUserService createService = new CreateUserService(userRepository);
         User user = userForm.convert();
         return createService.createNewUser(user, uriBuilder);

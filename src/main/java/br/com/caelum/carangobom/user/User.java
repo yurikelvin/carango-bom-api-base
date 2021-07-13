@@ -23,7 +23,7 @@ public class User implements UserDetails {
     private String username;
 
     @NotBlank(message = "Senha é um campo obrigatório")
-    @Size(min = 6, max = 50, message = "A senha deve ser menor que {min} e menor que {max}")
+    @Size(min = 3, message = "O nome de usuário deve ser maior que {min}")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
