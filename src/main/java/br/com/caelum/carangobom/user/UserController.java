@@ -1,7 +1,6 @@
 package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,19 +42,9 @@ public class UserController {
     @PostMapping("/users")
     @Transactional
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
+        CreateUserService createService = new CreateUserService(userRepository);
         User user = userForm.convert();
-
-        // TODO - Create a service to validate user
-        Optional<User> isCreated = userRepository.findByUsername(user.getUsername());
-
-        if (isCreated.isPresent()) {
-            String errorMessage = "Usuário já cadastrado";
-            throw  new BadRequestException(errorMessage);
-        }
-
-        userRepository.save(user);
-        URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UserDTO(user));
+        return createService.createNewUser(user, uriBuilder);
     }
 
     @DeleteMapping("/users/{id}")
