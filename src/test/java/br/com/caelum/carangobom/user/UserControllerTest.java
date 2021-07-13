@@ -110,4 +110,39 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
+
+
+    @Transactional
+    @Test
+    public void shouldDeleteTheUserWithPathId() throws Exception {
+        UserForm newUserForm = new UserForm("username", "password");
+        User converted = newUserForm.convert();
+        entityManager.persist(converted);
+        entityManager.flush();
+
+        URI uri = new URI("/users/" + converted.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+    }
+
+    @Transactional
+    @Test
+    public void shouldNotDeleteTheUserWithInvalidPathId() throws Exception {
+        UserForm newUserForm = new UserForm("username", "password");
+        User converted = newUserForm.convert();
+        entityManager.persist(converted);
+        entityManager.flush();
+
+        URI uri = new URI("/users/" + 123);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
+    }
+
+
 }
