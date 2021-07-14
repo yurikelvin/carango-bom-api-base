@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @ActiveProfiles("test")
-public class AuthControlleTest {
+class AuthControllerTest {
 
     private AuthController authController;
 
@@ -48,14 +48,15 @@ public class AuthControlleTest {
         authController = new AuthController(authenticationManagerMock, tokenServiceMock);
     }
 
-
     @Test
     void whenAuthenticate_shouldReturnToken() {
+        var userName = "username";
+        var password =  "password";
         TokenDTO authRequest = new TokenDTO("123123", "123456");
 
         LoginForm loginForm = new LoginForm();
-        loginForm.setUsername("123123");
-        loginForm.setPassword("123456");
+        loginForm.setUsername(userName);
+        loginForm.setPassword(password);
 
 
         when(tokenServiceMock.gerarToken(Mockito.any()))
@@ -64,6 +65,8 @@ public class AuthControlleTest {
         var response = authController.autenticar(loginForm);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(loginForm.getUsername(), userName);
+        assertEquals(loginForm.getPassword(), password);
 
         verify(authenticationManagerMock).authenticate(Mockito.any());
         verify(tokenServiceMock).gerarToken(Mockito.any());

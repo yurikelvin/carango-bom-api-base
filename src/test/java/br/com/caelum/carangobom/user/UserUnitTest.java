@@ -87,6 +87,11 @@ class UserUnitTest {
         Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
         Assert.assertEquals("username", newUser.getUsername());
         Assert.assertEquals("password", newUser.getPassword());
+        Assert.assertEquals(true, newUser.isAccountNonExpired());
+        Assert.assertEquals(true, newUser.isAccountNonLocked());
+        Assert.assertEquals(true, newUser.isEnabled());
+        Assert.assertEquals(true, newUser.isCredentialsNonExpired());
+
     }
 
     @Test

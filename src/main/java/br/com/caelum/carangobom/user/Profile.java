@@ -34,6 +34,6 @@ public class Profile implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return name;
+        return this.name;
     }
 }
