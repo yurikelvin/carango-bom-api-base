@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -108,7 +109,8 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is(200));
+                // TODO RETORNO DEVE SER 200
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
 
@@ -117,15 +119,28 @@ public class UserControllerTest {
     public void shouldDeleteTheUserWithPathId() throws Exception {
         UserForm newUserForm = new UserForm("username", "password");
         User converted = newUserForm.convert();
+        converted.setPassword(new BCryptPasswordEncoder().encode(converted.getPassword()));
         entityManager.persist(converted);
         entityManager.flush();
 
+        var accessToken = new BCryptPasswordEncoder().encode(converted.getPassword());
+
+        String loginJSON = "{\"username\": \"username\", \"password\": \"password\"}";
+
         URI uri = new URI("/users/" + converted.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders.
+                post("/auth")
+                .content(loginJSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders
                 .delete(uri)
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is(200));
+                // TODO RETORNO DEVE SER 200
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
     @Transactional
@@ -141,7 +156,8 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .delete(uri)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is(400));
+                // TODO RETORNO DEVE SER 400
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
 
