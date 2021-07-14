@@ -10,8 +10,8 @@ public class TestTokenDTO {
 
     @Test
     void testAddingValues(){
-        String tokenValue = Mockito.anyString();
-        String type = Mockito.anyString();
+        String tokenValue = "TOKEN";
+        String type = "type";
 
         TokenDTO token = new TokenDTO(tokenValue, type);
 
