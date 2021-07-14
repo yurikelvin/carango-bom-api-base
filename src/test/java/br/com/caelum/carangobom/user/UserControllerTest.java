@@ -124,22 +124,13 @@ public class UserControllerTest {
         entityManager.flush();
 
         var accessToken = new BCryptPasswordEncoder().encode(converted.getPassword());
-
-        String loginJSON = "{\"username\": \"username\", \"password\": \"password\"}";
-
         URI uri = new URI("/users/" + converted.getId());
-
-        mockMvc.perform(MockMvcRequestBuilders.
-                post("/auth")
-                .content(loginJSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders
                 .delete(uri)
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON))
-                // TODO RETORNO DEVE SER 200
+                // TODO should return 200
                 .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
