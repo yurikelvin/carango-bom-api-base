@@ -11,14 +11,17 @@ public class TestTokenDTO {
 
     @Test
     void testAddingValues(){
-        Mockito.mock(TokenDTO.class);
         String tokenValue = "TOKEN";
-        String type = "type";
+        String typeValue = "type";
 
-        TokenDTO token = new TokenDTO(tokenValue, type);
+        TokenDTO tokenDTO = new TokenDTO(tokenValue, typeValue);
 
-        Assert.assertEquals(token.getToken(), tokenValue);
-        Assert.assertEquals(token.getType(), type);
+        var token = tokenDTO.getToken();
+        var type = tokenDTO.getType();
+
+
+        Assert.assertEquals(token, tokenValue);
+        Assert.assertEquals(type, typeValue);
     }
 
 }

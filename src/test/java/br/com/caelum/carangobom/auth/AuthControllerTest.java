@@ -51,11 +51,13 @@ public class AuthControllerTest {
 
     @Test
     void whenAuthenticate_shouldReturnToken() {
+        var userName = "username";
+        var password =  "password";
         TokenDTO authRequest = new TokenDTO("123123", "123456");
 
         LoginForm loginForm = new LoginForm();
-        loginForm.setUsername("123123");
-        loginForm.setPassword("123456");
+        loginForm.setUsername(userName);
+        loginForm.setPassword(password);
 
 
         when(tokenServiceMock.gerarToken(Mockito.any()))
@@ -64,6 +66,8 @@ public class AuthControllerTest {
         var response = authController.autenticar(loginForm);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(loginForm.getUsername(), userName);
+        assertEquals(loginForm.getPassword(), password);
 
         verify(authenticationManagerMock).authenticate(Mockito.any());
         verify(tokenServiceMock).gerarToken(Mockito.any());
