@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 @ActiveProfiles("test")
-public class ProfileTest {
+class ProfileTest {
 
     @Test
     void shouldTestProfileConstructor(){
@@ -22,9 +22,9 @@ public class ProfileTest {
         var profileName = profile.get().getName();
         var profileAuth = profile.get().getAuthority();
 
-        Assert.assertEquals(profileId.intValue(), 1L);
-        Assert.assertEquals(profileName.toString(), "Test name");
-        Assert.assertEquals(profileAuth.toString(), "Test name");
+        Assert.assertEquals(1L, profileId.intValue());
+        Assert.assertEquals("Test name", profileName.toString());
+        Assert.assertEquals("Test name", profileAuth.toString());
 
     }
 }

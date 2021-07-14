@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @ActiveProfiles("test")
- class AuthServiceTest {
+class AuthServiceTest {
 
     @Mock
     private UserRepository userRepository;

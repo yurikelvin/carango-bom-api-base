@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-public class TestTokenDTO {
+class TestTokenDTO {
 
     @Test
     void testAddingValues(){

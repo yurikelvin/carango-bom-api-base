@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @ActiveProfiles("test")
-public class AuthControllerTest {
+class AuthControllerTest {
 
     private AuthController authController;
 
