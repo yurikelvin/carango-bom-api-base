@@ -1,7 +1,6 @@
 package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,12 +41,9 @@ public class UserController {
 
     @PostMapping("/users")
     @Transactional
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
-
+    public ResponseEntity<UserWithoutPasswordDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
         CreateUserService createService = new CreateUserService(userRepository);
-
         User user = userForm.convert();
-
         return createService.createNewUser(user, uriBuilder);
     }
 
