@@ -2,16 +2,12 @@ package br.com.caelum.carangobom.brand;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -23,9 +19,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-@ActiveProfiles("test")
-@RunWith(SpringRunner.class)
-@DataJpaTest
 class BrandControllerTest {
 
     private BrandController brandController;
@@ -45,17 +38,17 @@ class BrandControllerTest {
     @Test
     void shouldReturnListWhenThereAreResults() {
         List<Brand> brands = List.of(
-            new Brand(1L, "Audi"),
-            new Brand(2L, "BMW"),
-            new Brand(3L, "Fiat")
+                new Brand(1L, "Audi"),
+                new Brand(2L, "BMW"),
+                new Brand(3L, "Fiat")
         );
-        
+
         Page<Brand> pagedBrands = new PageImpl<Brand>(brands);
-        
+
         PageRequest pageable = PageRequest.of(1, 10);
-        
+
         when(brandRepository.findAll(pageable))
-            .thenReturn(pagedBrands);  
+                .thenReturn(pagedBrands);
 
         Page<Brand> resultado = brandController.findAll(pageable);
         assertEquals(pagedBrands, resultado);
@@ -66,7 +59,7 @@ class BrandControllerTest {
         Brand audi = new Brand(1L, "Audi");
 
         when(brandRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
+                .thenReturn(Optional.of(audi));
 
         ResponseEntity<Brand> resposta = brandController.findById(1L);
         assertEquals(audi, resposta.getBody());
@@ -87,12 +80,12 @@ class BrandControllerTest {
         Brand nova = new Brand("Ferrari");
 
         when(brandRepository.save(nova))
-            .then(invocation -> {
-                Brand marcaSalva = invocation.getArgument(0, Brand.class);
-                marcaSalva.setId(1L);
+                .then(invocation -> {
+                    Brand marcaSalva = invocation.getArgument(0, Brand.class);
+                    marcaSalva.setId(1L);
 
-                return marcaSalva;
-            });
+                    return marcaSalva;
+                });
 
         ResponseEntity<Brand> resposta = brandController.save(nova, uriBuilder);
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
@@ -104,7 +97,7 @@ class BrandControllerTest {
         Brand audi = new Brand(1L, "Audi");
 
         when(brandRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
+                .thenReturn(Optional.of(audi));
 
         ResponseEntity<Brand> resposta = brandController.update(1L, new Brand(1L, "NOVA Audi"));
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
@@ -127,7 +120,7 @@ class BrandControllerTest {
         Brand audi = new Brand(1l, "Audi");
 
         when(brandRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
+                .thenReturn(Optional.of(audi));
 
         ResponseEntity<Brand> resposta = brandController.delete(1L);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
