@@ -2,6 +2,8 @@ package br.com.caelum.carangobom.vehicle;
 
 import java.net.URI;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.validator.internal.constraintvalidators.hv.ModCheckBase;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +54,7 @@ class VehicleControllerTest {
 	}
 
 	@Test
-	public void shouldUpdateVehicleIfRecivedCorrectParameters() throws Exception {
+	public void shouldUpdateVehicleWithCorrectParameters() throws Exception {
 		Brand brand = brandRepository.save(new Brand("Audi"));
 		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
 

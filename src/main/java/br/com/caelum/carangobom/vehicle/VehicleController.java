@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import br.com.caelum.carangobom.brand.Brand;
+import br.com.caelum.carangobom.brand.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,89 +39,90 @@ import br.com.caelum.carangobom.validacao.ListaDeErrosOutputDto;
 @RestController
 @RequestMapping("/vehicles")
 public class VehicleController {
-	
-		@Autowired
-	    private VehicleRepository vehicleRepository;
-		@Autowired
-	    private BrandRepository brandRepository;
 
-	    @Autowired
-	    public VehicleController(VehicleRepository vehicleRepository) {
-	        this.vehicleRepository = vehicleRepository;
-	    }
-	    
-	    @GetMapping
-	    public Page<Vehicle> findAll(
-				@PageableDefault(sort = "model", direction = Direction.ASC, page = 0, size = 10)
-				Pageable pageable
-			) {
-		    return vehicleRepository.findAll(pageable);
-	    }
+	private BrandService brandService;
+	private VehicleRepository vehicleRepository;
+	private VehicleService vehicleService;
 
-	    @GetMapping("/{id}")
-	    public ResponseEntity<Vehicle> findById(@PathVariable Long id) {
-	        Optional<Vehicle> vehicle = vehicleRepository.findById(id);
-	        if (vehicle.isPresent()) {
-	            return ResponseEntity.ok(vehicle.get());
-	        } else {
-	            throw new BadRequestException("Vehicle not Found");
-	        }
-	    }
+	@Autowired
+	private VehicleController(VehicleService vehicleService) {
+		this.vehicleService = vehicleService;
+	};
 
-	    @PostMapping
-	    @Transactional
-	    public ResponseEntity<Vehicle> save(@Valid @RequestBody VehicleForm vehicleForm, UriComponentsBuilder uriBuilder) throws Exception {
-	    	Vehicle vehicle = vehicleForm.toVehicle(brandRepository);
-	    	Vehicle saveVehicle = vehicleRepository.save(vehicle);
-	        URI uri = uriBuilder.path("/vehicles/{id}").buildAndExpand(saveVehicle.getId()).toUri();
-	        return ResponseEntity.created(uri).body(saveVehicle);
-	    }
+	@Autowired
+	public VehicleController(BrandService brandService) {
+		this.brandService = brandService;
+	};
 
-	    @PutMapping("/{id}")
-	    @Transactional
-	    public ResponseEntity<Vehicle> update(@PathVariable Long id, @Valid @RequestBody VehicleForm vehicleForm) {
-	    	
-	        Optional<Vehicle> optional = vehicleRepository.findById(id);
-	        Vehicle v = vehicleForm.toVehicle(brandRepository);
-	        
-	        if (optional.isPresent()) {
-	        	
-	            Vehicle vehicle = optional.get();
-	            vehicle.setModel(v.getModel());
-	            vehicle.setBrand(v.getBrand());
-	            vehicle.setYear(v.getYear());
-	            return ResponseEntity.ok(vehicle);
-	            
-	        } 
-	        
-	        throw new BadRequestException("Vehicle not found!");
-	    }
+	@Autowired
+	public VehicleController(VehicleRepository vehicleRepository) {
+		this.vehicleRepository = vehicleRepository;
+	}
 
-	    @DeleteMapping("/{id}")
-	    @Transactional
-	    public ResponseEntity<Vehicle> delete(@PathVariable Long id) {
-	        Optional<Vehicle> optional = vehicleRepository.findById(id);
-	        if (optional.isPresent()) {
-	            Vehicle vehicle = optional.get();
-	            vehicleRepository.delete(vehicle);
-	            return ResponseEntity.ok(vehicle);
-	        } else {
-	            throw new BadRequestException("Vehicle not Found");
-	        }
-	    }
+	@GetMapping
+	public Page<Vehicle> findAll(
+			@PageableDefault(sort = "model", direction = Direction.ASC, page = 0, size = 10)
+			Pageable pageable
+		) {
+		return vehicleRepository.findAll(pageable);
+	}
 
-	    @ResponseStatus(HttpStatus.BAD_REQUEST)
-	    @ExceptionHandler(MethodArgumentNotValidException.class)
-	    public ListaDeErrosOutputDto validate(MethodArgumentNotValidException exception) {
-	        List<ErroDeParametroOutputDto> l = new ArrayList<>();
-	        exception.getBindingResult().getFieldErrors().forEach(e -> {
-	            ErroDeParametroOutputDto d = new ErroDeParametroOutputDto();
-	            d.setParametro(e.getField());
-	            d.setMensagem(e.getDefaultMessage());
-	            l.add(d);
-	        });
-	        ListaDeErrosOutputDto l2 = new ListaDeErrosOutputDto();
-	        l2.setErros(l);
-	        return l2;
-	    }
+	@GetMapping("/{id}")
+	public ResponseEntity<Vehicle> findById(@PathVariable Long id) {
+		Optional<Vehicle> vehicle = vehicleRepository.findById(id);
+		if (vehicle.isPresent()) {
+			return ResponseEntity.ok(vehicle.get());
+		} else {
+			throw new BadRequestException("Vehicle not Found");
+		}
+	}
+
+	@PostMapping
+	@Transactional
+	public ResponseEntity<Vehicle> create(
+			@Valid @RequestBody VehicleForm vehicleForm,
+			UriComponentsBuilder uriBuilder
+	) throws Exception {
+		Vehicle vehicle = vehicleService.create(vehicleForm);
+		URI uri = uriBuilder.path("/brands/{id}").buildAndExpand(vehicle.getId()).toUri();
+		return ResponseEntity.created(uri).body(vehicle);
+	}
+
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity<Vehicle> update(
+			@PathVariable Long id,
+			@Valid @RequestBody VehicleForm vehicleForm
+	) throws  Exception {
+		Vehicle vehicle = vehicleService.update(id, vehicleForm);
+		return ResponseEntity.ok().body(vehicle);
+	}
+
+	@DeleteMapping("/{id}")
+	@Transactional
+	public ResponseEntity<Vehicle> delete(@PathVariable Long id) {
+		Optional<Vehicle> optional = vehicleRepository.findById(id);
+		if (optional.isPresent()) {
+			Vehicle vehicle = optional.get();
+			vehicleRepository.delete(vehicle);
+			return ResponseEntity.ok(vehicle);
+		} else {
+			throw new BadRequestException("Vehicle not Found");
+		}
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ListaDeErrosOutputDto validate(MethodArgumentNotValidException exception) {
+		List<ErroDeParametroOutputDto> l = new ArrayList<>();
+		exception.getBindingResult().getFieldErrors().forEach(e -> {
+			ErroDeParametroOutputDto d = new ErroDeParametroOutputDto();
+			d.setParametro(e.getField());
+			d.setMensagem(e.getDefaultMessage());
+			l.add(d);
+		});
+		ListaDeErrosOutputDto l2 = new ListaDeErrosOutputDto();
+		l2.setErros(l);
+		return l2;
+	}
 }

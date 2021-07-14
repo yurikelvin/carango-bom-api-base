@@ -6,12 +6,12 @@ import javax.validation.constraints.Size;
 
 public class UserForm {
 
-    @NotEmpty
+    @NotEmpty(message = "Usuário é um campo obrigatório")
     @NotNull
     @Size(min = 3, max = 100, message = "O nome de usuário deve ser maior que {min} e menor que {max}")
     private String username;
 
-    @NotEmpty
+    @NotEmpty(message = "A senha é um campo obrigatório")
     @NotNull
     @Size(min = 3, max = 50, message = "A senha deve ser maior que {min} e menor que {max}")
     private String password;
