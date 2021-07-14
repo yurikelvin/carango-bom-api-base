@@ -48,7 +48,6 @@ public class AuthControllerTest {
         authController = new AuthController(authenticationManagerMock, tokenServiceMock);
     }
 
-
     @Test
     void whenAuthenticate_shouldReturnToken() {
         var userName = "username";
