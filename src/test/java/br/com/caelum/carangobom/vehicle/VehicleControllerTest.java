@@ -23,7 +23,7 @@ import br.com.caelum.carangobom.brand.BrandRepository;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class SpringVehicleControllerTest {
+class VehicleControllerTest {
 
 	@Autowired
 	private BrandRepository brandRepository;

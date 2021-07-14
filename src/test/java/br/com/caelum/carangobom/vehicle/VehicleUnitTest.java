@@ -22,7 +22,7 @@ class VehicleUnitTest {
     private BrandRepository brandRepository;
 
     @Test
-    void souldConvertVehicleFormToVehicleIfBrandExist() throws Exception {
+    void shouldConvertVehicleFormToVehicleIfBrandExist() throws Exception {
     	
     	Brand brand = new Brand("Audi");
     	
@@ -41,7 +41,7 @@ class VehicleUnitTest {
     }
     
     @Test
-    void souldReturn404WhenTryToConvertVehicleFormToVehicleWithNonexistentBrandId() {
+    void shouldReturn404WhenTryToConvertVehicleFormToVehicleWithNonexistentBrandId() {
     	
     	VehicleForm vehicleForm = new VehicleForm(1L, "TT", 2012);
           
