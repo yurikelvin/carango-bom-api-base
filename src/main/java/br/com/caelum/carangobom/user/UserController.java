@@ -1,8 +1,10 @@
 package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
+import br.com.caelum.carangobom.services.user.ValidateUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,6 +21,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
+    private ValidateUserService validateUserService;
+
+    @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -32,11 +37,13 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserWithoutPasswordDTO>details(@PathVariable Long id){
-        Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()){
-            return ResponseEntity.ok(new UserWithoutPasswordDTO(user.get()));
+        try {
+            var user = validateUserService.execute(id);
+            return ResponseEntity.ok(new UserWithoutPasswordDTO(user));
+        }catch (UsernameNotFoundException e){
+            throw new UsernameNotFoundException("Usuário informado não é válido");
         }
-        throw new BadRequestException("Usuário informado não é válido");
+
     }
 
     @PostMapping("/users")
