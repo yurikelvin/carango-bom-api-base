@@ -1,8 +1,10 @@
-package br.com.caelum.carangobom.user;
+package br.com.caelum.carangobom.security;
 
 import br.com.caelum.carangobom.auth.AuthController;
 import br.com.caelum.carangobom.config.security.AuthenticationService;
 import br.com.caelum.carangobom.exception.BadRequestException;
+import br.com.caelum.carangobom.user.User;
+import br.com.caelum.carangobom.user.UserRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @ActiveProfiles("test")
-public class AuthServiceTest {
+ class AuthServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -49,7 +51,7 @@ public class AuthServiceTest {
     @Test
     void shouldReturnUsernameNotFoundException(){
         Assert.assertThrows(UsernameNotFoundException.class, () -> {
-            authenticationService.loadUserByUsername(any());
+            authenticationService.loadUserByUsername(Mockito.anyString());
         });
     }
 }
