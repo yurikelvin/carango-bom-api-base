@@ -1,6 +1,6 @@
 package br.com.caelum.carangobom.user;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,7 +20,7 @@ import java.net.URI;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class UserControllerTest {
+public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -31,7 +31,6 @@ class UserControllerTest {
     @Autowired
     private EntityManager entityManager;
 
-    @Test
     public void shouldReturnTheListOfUser() throws Exception {
         URI uri = new URI("/users");
         mockMvc.perform(MockMvcRequestBuilders
@@ -50,7 +49,7 @@ class UserControllerTest {
         entityManager.persist(converted);
         entityManager.flush();
 
-        String json = "{\"username\": \"username\", \"password\": \"newPassword\"}";
+        String json = "{\"username\": \"username\", \"password\": \"newpassword\"}";
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
                 .content(json)
@@ -62,7 +61,7 @@ class UserControllerTest {
     public void shouldReturnErrorWhenDoesNotHaveUsername() throws Exception {
         URI uri = new URI("/users");
 
-        String json = "{\"username\": \"\", \"password\": \"newPassword\"}";
+        String json = "{\"username\": \"\", \"password\": \"newpassword\"}";
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
@@ -93,6 +92,7 @@ class UserControllerTest {
                 .get(uri)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
+
     }
 
     @Transactional
@@ -110,4 +110,39 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
+
+
+    @Transactional
+    @Test
+    public void shouldDeleteTheUserWithPathId() throws Exception {
+        UserForm newUserForm = new UserForm("username", "password");
+        User converted = newUserForm.convert();
+        entityManager.persist(converted);
+        entityManager.flush();
+
+        URI uri = new URI("/users/" + converted.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+    }
+
+    @Transactional
+    @Test
+    public void shouldNotDeleteTheUserWithInvalidPathId() throws Exception {
+        UserForm newUserForm = new UserForm("username", "password");
+        User converted = newUserForm.convert();
+        entityManager.persist(converted);
+        entityManager.flush();
+
+        URI uri = new URI("/users/" + 123);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
+    }
+
+
 }

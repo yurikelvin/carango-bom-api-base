@@ -43,18 +43,24 @@ public class UserController {
     @PostMapping("/users")
     @Transactional
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
+
+        CreateUserService createService = new CreateUserService(userRepository);
+
         User user = userForm.convert();
 
-        // TODO - Create a service to validate user
-        User isCreated = userRepository.findByUsername(user.getUsername());
+        return createService.createNewUser(user, uriBuilder);
+    }
 
-        if (isCreated != null) {
-            String errorMessage = "Usuário já cadastrado";
-            throw  new BadRequestException(errorMessage);
+    @DeleteMapping("/users/{id}")
+    @Transactional
+    public ResponseEntity<UserWithoutPasswordDTO>delete(@PathVariable Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if(user.isPresent()){
+            userRepository.deleteById(id);
+            return ResponseEntity.ok().build();
         }
 
-        userRepository.save(user);
-        URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UserDTO(user));
+        throw new BadRequestException("Usuário informado não é válido");
     }
 }
