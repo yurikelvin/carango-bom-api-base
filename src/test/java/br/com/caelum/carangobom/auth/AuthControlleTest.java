@@ -11,8 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,77 +22,69 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
+import javax.security.auth.spi.LoginModule;
 
 import java.net.http.HttpResponse;
 
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @ActiveProfiles("test")
 public class AuthControlleTest {
 
-    private EntityManager entityManager;
-
-    @Mock
-    private AuthenticationService authenticationService;
-
-
-    @Mock
     private AuthController authController;
 
     @Mock
-    private TokenService tokenService;
+    private AuthenticationManager authenticationManagerMock;
 
     @Mock
-    private UserRepository userRepository;
+    private TokenService tokenServiceMock;
 
-    @Mock
-    private AuthenticationManager authManager;
 
     @BeforeEach
-    public void configuraMock() {
+    void setUp() {
         openMocks(this);
+        authController = new AuthController(authenticationManagerMock, tokenServiceMock);
     }
 
-    @Test
-    void shouldReturnError(){
-        LoginForm loginForm = new LoginForm();
-        loginForm.setUsername("");
-        loginForm.setPassword("password");
-
-        UserForm userForm = new UserForm("new_1", "validaPassword");
-        User user = userForm.convert();
-
-        when(tokenService.gerarToken(Mockito.any())).thenReturn("any");
-
-        ResponseEntity<?> a = authController.autenticar(loginForm);
-
-        System.out.println(a);
-
-    }
 
     @Test
-    void shouldNotDeleteUserWithInvalidPathId(){
+    void whenAuthenticate_shouldReturnToken() {
+        TokenDTO authRequest = new TokenDTO("123123", "123456");
 
         LoginForm loginForm = new LoginForm();
-        loginForm.setUsername("new_1");
-        loginForm.setPassword("password");
-        when(userRepository.findByUsername(Mockito.anyString())).thenReturn(null);
-        when(authManager.authenticate(Mockito.any())).thenReturn(null);
-        ResponseEntity<?> controller = authController.autenticar(loginForm);
-        System.out.println(controller);
-        Assert.assertNull(controller);
-    }
+        loginForm.setUsername("123123");
+        loginForm.setPassword("123456");
 
+
+        when(tokenServiceMock.gerarToken(Mockito.any()))
+                .thenReturn("TOKEN");
+
+        var response = authController.autenticar(loginForm);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        verify(authenticationManagerMock).authenticate(Mockito.any());
+        verify(tokenServiceMock).gerarToken(Mockito.any());
+    }
 
     @Test
-    void TestAuthenticationService(){
-        User user = new User(1L, "username", "validaPassword");
-        when(userRepository.findByUsername(user.getUsername())).thenReturn(null);
+    void shouldReturnErro(){
+        TokenDTO authRequest = new TokenDTO("123123", "123456");
 
-        Assert.assertThrows(UsernameNotFoundException.class, () -> {
-            authenticationService.loadUserByUsername(user.getUsername());
-        });
+        LoginForm loginForm = new LoginForm();
+        loginForm.setUsername("123123");
+        loginForm.setPassword("123456");
+
+        doThrow(BadCredentialsException.class)
+                .when(authenticationManagerMock)
+                .authenticate(any());
+
+       var response= authController.autenticar(loginForm);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
     }
+
 }

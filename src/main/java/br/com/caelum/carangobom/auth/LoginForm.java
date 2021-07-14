@@ -3,7 +3,6 @@ package br.com.caelum.carangobom.auth;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 public class LoginForm {
-
     private String username;
     private String password;
 

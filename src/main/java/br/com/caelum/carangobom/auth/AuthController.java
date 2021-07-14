@@ -24,6 +24,11 @@ public class AuthController {
     @Autowired
     private TokenService tokenService;
 
+    public AuthController(AuthenticationManager authManager, TokenService tokenService) {
+        this.authManager = authManager;
+        this.tokenService = tokenService;
+    }
+
     @PostMapping
     public ResponseEntity<?> autenticar(@RequestBody @Valid LoginForm form) {
 
