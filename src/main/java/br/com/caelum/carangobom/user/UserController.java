@@ -19,9 +19,6 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -35,7 +32,8 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserWithoutPasswordDTO> details(@PathVariable Long id){
-        return userService.saveUserById(id);
+        var userService = new UserService(userRepository);
+        return userService.getUserById(id);
     }
 
     @PostMapping("/users")

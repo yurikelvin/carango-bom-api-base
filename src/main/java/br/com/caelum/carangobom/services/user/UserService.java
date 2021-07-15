@@ -14,7 +14,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
 
@@ -22,10 +22,28 @@ public class UserService {
 
             var validatedUser = userRepository.findById(id);
             if(validatedUser.isPresent()){
-                var stateReturn = new UserWithoutPasswordDTO(validatedUser.get());
-                return ResponseEntity.status(HttpStatus.OK).body("Erro ao criar usuário");
+                var convertedUser =  UserWithoutPasswordDTO.convertSingleUser(validatedUser.get());
+                return ResponseEntity.status(HttpStatus.OK).body(convertedUser);
             }
             throw new NotFoundException("Erro ao criar usuário");
+    }
+
+    public ResponseEntity getUserById(Long id){
+        var validatedUser = userRepository.findById(id);
+        if(validatedUser.isPresent()){
+            var convertedUser = UserWithoutPasswordDTO.convertSingleUser(validatedUser.get());
+            return ResponseEntity.status(HttpStatus.OK).body(convertedUser);
+        }
+        throw new NotFoundException("Usuário não encontrado.");
+    }
+
+    public UserWithoutPasswordDTO getUser(Long id){
+        var validatedUser = userRepository.findById(id);
+        if(validatedUser.isPresent()){
+            var convertedUser = UserWithoutPasswordDTO.convertSingleUser(validatedUser.get());
+            return convertedUser;
+        }
+        return null;
     }
 
 }

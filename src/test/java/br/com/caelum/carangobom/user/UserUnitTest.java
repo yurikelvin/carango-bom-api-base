@@ -1,7 +1,8 @@
 package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
-import javassist.NotFoundException;
+import br.com.caelum.carangobom.exception.NotFoundException;
+import br.com.caelum.carangobom.services.user.UserService;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -143,20 +146,19 @@ class UserUnitTest {
 
     @Test
     void shouldFindUserWithPathId(){
-        User newUser = new User(1L, "username1", "password1");
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
-        ResponseEntity<UserWithoutPasswordDTO> findById = userController.details(1L);
-        Assert.assertEquals(findById.getBody().getId(), newUser.getId());
-        Assert.assertEquals(findById.getBody().getUsername(), newUser.getUsername());
+        User user = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        var findById = userController.details(user.getId());
+        assertEquals(findById.getStatusCodeValue(), 200);
     }
 
     @Test
     void shouldNotFindUserWithInvalidPathId(){
-        Assert.assertThrows(BadRequestException.class, () -> {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        Assert.assertThrows(NotFoundException.class, () -> {
             userController.details(1L);
         });
     }
-
 
     @Test
     void shouldReceiveTheUserFormValues(){
