@@ -4,13 +4,11 @@ import br.com.caelum.carangobom.exception.BadRequestException;
 import br.com.caelum.carangobom.services.user.ValidateUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,14 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserWithoutPasswordDTO>details(@PathVariable Long id){
-        try {
-            var user = validateUserService.execute(id);
-            return ResponseEntity.ok(new UserWithoutPasswordDTO(user));
-        }catch (UsernameNotFoundException e){
-            throw new UsernameNotFoundException("Usuário informado não é válido");
-        }
-
+    public ResponseEntity<UserWithoutPasswordDTO> details(@PathVariable Long id){
+        return validateUserService.execute(id);
     }
 
     @PostMapping("/users")
