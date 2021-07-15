@@ -1,10 +1,7 @@
-package br.com.caelum.carangobom.services.user;
+package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
 import br.com.caelum.carangobom.exception.NotFoundException;
-import br.com.caelum.carangobom.user.User;
-import br.com.caelum.carangobom.user.UserRepository;
-import br.com.caelum.carangobom.user.UserWithoutPasswordDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +22,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    private UserWithoutPasswordDTO getValidatedUserWithoutPasswordDTO(Long id){
+    private UserDTO getValidatedUserWithoutPasswordDTO(Long id){
         var validatedUser = userRepository.findById(id);
         if(validatedUser.isPresent()){
-            return UserWithoutPasswordDTO.convertSingleUser(validatedUser.get());
+            return UserDTO.convertSingleUser(validatedUser.get());
         }
         return null;
     }
@@ -36,13 +33,13 @@ public class UserService {
     public ResponseEntity getUserById(Long id){
         var validatedUser = userRepository.findById(id);
         if(validatedUser.isPresent()){
-            var convertedUser = UserWithoutPasswordDTO.convertSingleUser(validatedUser.get());
+            var convertedUser = UserDTO.convertSingleUser(validatedUser.get());
             return ResponseEntity.status(HttpStatus.OK).body(convertedUser);
         }
         throw new NotFoundException("Usuário não encontrado.");
     }
 
-    public  ResponseEntity<UserWithoutPasswordDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
+    public  ResponseEntity<UserDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
         Optional<User> isCreated = userRepository.findByUsername(user.getUsername());
 
         if (isCreated.isPresent()) {
@@ -55,7 +52,7 @@ public class UserService {
 
         userRepository.save(encryptedUser);
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UserWithoutPasswordDTO(user));
+        return ResponseEntity.created(uri).body(new UserDTO(user));
 
     }
 

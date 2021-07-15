@@ -8,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @ActiveProfiles("test")
-public class AutenticacaoViaTokenFilterTest {
+public class FilterAuthTokenTest {
 
     @BeforeEach
     public void configuraMock() {

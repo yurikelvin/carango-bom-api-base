@@ -2,16 +2,13 @@ package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
 import br.com.caelum.carangobom.exception.NotFoundException;
-import br.com.caelum.carangobom.services.user.UserService;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
@@ -49,7 +46,7 @@ class UserUnitTest {
 
         when(userRepository.save(user)).thenReturn(user);
 
-        ResponseEntity<UserWithoutPasswordDTO> createUserContorller = userController.create(userForm, uriBuilder);
+        ResponseEntity<UserDTO> createUserContorller = userController.create(userForm, uriBuilder);
 
         Assert.assertEquals(createUserContorller.getBody().getId(), user.getId());
         Assert.assertEquals(createUserContorller.getBody().getUsername(), user.getUsername());
@@ -116,7 +113,6 @@ class UserUnitTest {
 
         Assert.assertEquals(newUser.getId(), userDTO.getId());
         Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
-        Assert.assertEquals(newUser.getPassword(), userDTO.getPassword());
     }
 
     @Test
@@ -139,7 +135,7 @@ class UserUnitTest {
 
         when(userRepository.findAll()).thenReturn(userList);
 
-        List<UserWithoutPasswordDTO> userListController = userController.listAll();
+        List<UserDTO> userListController = userController.listAll();
 
         assertEquals(userList.size(),userListController.size());
     }
@@ -163,9 +159,9 @@ class UserUnitTest {
     @Test
     void shouldReceiveTheUserFormValues(){
         User newUser = new User(1L, "username", "password");
-        Mockito.mock(UserWithoutPasswordDTO.class);
+        Mockito.mock(UserDTO.class);
 
-        UserWithoutPasswordDTO userDTO = new UserWithoutPasswordDTO(newUser);
+        UserDTO userDTO = new UserDTO(newUser);
 
         Assert.assertEquals(newUser.getId(), userDTO.getId());
         Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
@@ -177,7 +173,7 @@ class UserUnitTest {
 
         when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
 
-        ResponseEntity<UserWithoutPasswordDTO> userControllerDelete = userController.delete(1L);
+        ResponseEntity<UserDTO> userControllerDelete = userController.delete(1L);
 
         Assert.assertEquals(userControllerDelete.getStatusCodeValue(), 200);
     }

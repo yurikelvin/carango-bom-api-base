@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom.auth;
+package br.com.caelum.carangobom.auth.token;
 
 public class TokenDTO {
     private String token;

@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom.user;
+package br.com.caelum.carangobom.auth;
 
 import org.springframework.security.core.GrantedAuthority;
 

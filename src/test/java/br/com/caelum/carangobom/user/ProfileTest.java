@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.user;
 
+import br.com.caelum.carangobom.auth.Profile;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
