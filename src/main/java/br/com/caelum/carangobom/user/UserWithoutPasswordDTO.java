@@ -23,4 +23,8 @@ public class UserWithoutPasswordDTO {
     public static List<UserWithoutPasswordDTO> convert(List<User> users) {
         return users.stream().map(UserWithoutPasswordDTO::new).collect(Collectors.toList());
     }
+
+    public static UserWithoutPasswordDTO convertSingleUser(User user){
+        return new UserWithoutPasswordDTO(user);
+    }
 }
