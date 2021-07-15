@@ -19,8 +19,13 @@ public class VehicleService {
 
     public VehicleService() {}
 
-    public Vehicle create(VehicleForm vehicleForm) throws Exception {
+    @Autowired
+    public VehicleService(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
+        this.brandService = new BrandService();
+    }
 
+    public Vehicle create(VehicleForm vehicleForm) throws Exception {
         Brand brand = brandService.findById(vehicleForm.getBrandId());
         Vehicle vehicle = vehicleForm.toVehicle(brand);
         return vehicleRepository.save(vehicle);

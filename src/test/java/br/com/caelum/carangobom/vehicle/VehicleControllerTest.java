@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.vehicle;
 
+import java.math.BigDecimal;
 import java.net.URI;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +38,7 @@ class VehicleControllerTest {
 	@Test
 	public void shouldReturn404WhenTryUpdateVehicleWithNonexistentBrandId() throws Exception {
 		Brand brand = brandRepository.save(new Brand("Audi"));
-		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
+		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT", new BigDecimal(3500.95)));
 
 		URI uri = new URI("/vehicles/" + vehicle.getId());
 
@@ -56,7 +57,7 @@ class VehicleControllerTest {
 	@Test
 	public void shouldUpdateVehicleWithCorrectParameters() throws Exception {
 		Brand brand = brandRepository.save(new Brand("Audi"));
-		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
+		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT", new BigDecimal(3500.95)));
 
 		URI uri = new URI("/vehicles/" + vehicle.getId());
 
@@ -112,7 +113,7 @@ class VehicleControllerTest {
 	public void shouldDeleteVehicleWithCorrectVehicleId() throws Exception {
 
 		Brand brand = brandRepository.save(new Brand("Audi"));
-		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
+		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT", new BigDecimal(3500.95)));
 
 		URI uri = new URI("/vehicles/" + vehicle.getId());
 
@@ -126,7 +127,7 @@ class VehicleControllerTest {
 	public void shouldReturn404WhenTryDeleteVehicleWithNonexistentVehicleId() throws Exception {
 
 		Brand brand = brandRepository.save(new Brand("Audi"));
-		vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
+		vehicleRepository.save(new Vehicle(brand, 2012, "TT", new BigDecimal(3500.95)));
 
 		URI uri = new URI("/vehicles/" + 999);
 
@@ -149,7 +150,7 @@ class VehicleControllerTest {
 	@Test
 	public void shouldReturn200WhenFindOneVehicle() throws Exception {
 		Brand brand = brandRepository.save(new Brand("Audi"));
-		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
+		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT", new BigDecimal(3500.95)));
 		URI uri = new URI("/vehicles/" + vehicle.getId());
 
 
@@ -162,9 +163,8 @@ class VehicleControllerTest {
 	@Test
 	public void shouldReturn404WhenTryFindOneWithNonexistentVehicleId() throws Exception {
 		Brand brand = brandRepository.save(new Brand("Audi"));
-		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
+		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT", new BigDecimal(3500.95)));
 		URI uri = new URI("/vehicles/" + 999);
-
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.get(uri)

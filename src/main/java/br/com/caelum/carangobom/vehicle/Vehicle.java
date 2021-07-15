@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 
 import br.com.caelum.carangobom.brand.Brand;
 
+import java.math.BigDecimal;
+
 
 @Entity
 public class Vehicle {
@@ -18,15 +20,17 @@ public class Vehicle {
 	private Brand brand;
 	private Integer year;
 	private String model;
+	private BigDecimal price;
 	
 	public Vehicle() {
 		
 	}
 	
-	public Vehicle(Brand brand, Integer year, String model) {
+	public Vehicle(Brand brand, Integer year, String model, BigDecimal price) {
 		this.brand = brand;
 		this.year = year;
 		this.model = model;
+		this.price = price;
 	}
 	
 	public Long getId() {
@@ -53,4 +57,6 @@ public class Vehicle {
 	public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
+	public BigDecimal getPrice() { return price; }
+	public void setPrice(BigDecimal price) { this.price = price; }
 }
