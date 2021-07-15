@@ -1,7 +1,7 @@
 package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
-import br.com.caelum.carangobom.services.user.ValidateUserService;
+import br.com.caelum.carangobom.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private ValidateUserService validateUserService;
+    private UserService userService;
 
     @Autowired
     public UserController(UserRepository userRepository) {
@@ -35,7 +35,7 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserWithoutPasswordDTO> details(@PathVariable Long id){
-        return validateUserService.execute(id);
+        return userService.saveUserById(id);
     }
 
     @PostMapping("/users")
