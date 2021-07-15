@@ -39,9 +39,9 @@ public class UserController {
     @PostMapping("/users")
     @Transactional
     public ResponseEntity<UserWithoutPasswordDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
-        CreateUserService createService = new CreateUserService(userRepository);
+        var userService = new UserService(userRepository);
         User user = userForm.convert();
-        return createService.createNewUser(user, uriBuilder);
+        return userService.createNewUser(user, uriBuilder);
     }
 
     @DeleteMapping("/users/{id}")

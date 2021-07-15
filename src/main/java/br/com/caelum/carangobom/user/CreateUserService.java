@@ -18,22 +18,5 @@ public class CreateUserService {
         this.repository = repository;
     }
 
-    public  ResponseEntity<UserWithoutPasswordDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
-        Optional<User> isCreated = repository.findByUsername(user.getUsername());
 
-        if (isCreated.isPresent()) {
-            String errorMessage = "Usuário já cadastrado";
-            throw  new BadRequestException(errorMessage);
-        }
-
-        User encryptedUser = user;
-        encryptedUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-
-        System.out.println(encryptedUser);
-
-        repository.save(encryptedUser);
-        URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UserWithoutPasswordDTO(user));
-
-    }
 }

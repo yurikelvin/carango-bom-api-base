@@ -26,22 +26,4 @@ class UserServiceTest {
 
         userService = new UserService(userRepository);
     }
-
-    @Test
-    void shouldCreateUserById(){
-        User user = new User(1L, "username1", "password1");
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user));
-        var createUser = userService.saveUserById(user.getId());
-        Assert.assertEquals(createUser.getStatusCodeValue(), 200);
-    }
-
-    @Test
-    void shoulNotCreateUserById(){
-        User user = new User(1L, "username1", "password1");
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Assert.assertThrows(NotFoundException.class, () -> {
-            userService.saveUserById(user.getId());
-        });
-    }
 }
