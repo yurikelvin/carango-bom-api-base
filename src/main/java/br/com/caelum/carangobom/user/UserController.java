@@ -3,7 +3,9 @@ package br.com.caelum.carangobom.user;
 import br.com.caelum.carangobom.exception.BadRequestException;
 import br.com.caelum.carangobom.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
