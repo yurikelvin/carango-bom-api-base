@@ -37,19 +37,18 @@ class BrandControllerTest {
 
     @Test
     void shouldReturnListWhenThereAreResults() {
-        List<Brand> brands;
-        brands = List.of(
-            new Brand(1L, "Audi"),
-            new Brand(2L, "BMW"),
-            new Brand(3L, "Fiat")
+        List<Brand> brands = List.of(
+                new Brand(1L, "Audi"),
+                new Brand(2L, "BMW"),
+                new Brand(3L, "Fiat")
         );
 
         Page<Brand> pagedBrands = new PageImpl<Brand>(brands);
-        
+
         PageRequest pageable = PageRequest.of(1, 10);
-        
+
         when(brandRepository.findAll(pageable))
-            .thenReturn(pagedBrands);  
+                .thenReturn(pagedBrands);
 
         Page<Brand> resultado = brandController.findAll(pageable);
         assertEquals(pagedBrands, resultado);
@@ -60,7 +59,7 @@ class BrandControllerTest {
         Brand audi = new Brand(1L, "Audi");
 
         when(brandRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
+                .thenReturn(Optional.of(audi));
 
         ResponseEntity<Brand> resposta = brandController.findById(1L);
         assertEquals(audi, resposta.getBody());
@@ -81,12 +80,12 @@ class BrandControllerTest {
         Brand nova = new Brand("Ferrari");
 
         when(brandRepository.save(nova))
-            .then(invocation -> {
-                Brand marcaSalva = invocation.getArgument(0, Brand.class);
-                marcaSalva.setId(1L);
+                .then(invocation -> {
+                    Brand marcaSalva = invocation.getArgument(0, Brand.class);
+                    marcaSalva.setId(1L);
 
-                return marcaSalva;
-            });
+                    return marcaSalva;
+                });
 
         ResponseEntity<Brand> resposta = brandController.save(nova, uriBuilder);
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
@@ -98,7 +97,7 @@ class BrandControllerTest {
         Brand audi = new Brand(1L, "Audi");
 
         when(brandRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
+                .thenReturn(Optional.of(audi));
 
         ResponseEntity<Brand> resposta = brandController.update(1L, new Brand(1L, "NOVA Audi"));
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
@@ -121,7 +120,7 @@ class BrandControllerTest {
         Brand audi = new Brand(1l, "Audi");
 
         when(brandRepository.findById(1L))
-            .thenReturn(Optional.of(audi));
+                .thenReturn(Optional.of(audi));
 
         ResponseEntity<Brand> resposta = brandController.delete(1L);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());

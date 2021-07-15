@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+@ActiveProfiles("test")
 class UserUnitTest {
 
     private UserController userController;
@@ -44,11 +46,10 @@ class UserUnitTest {
 
         when(userRepository.save(user)).thenReturn(user);
 
-        ResponseEntity<UserDTO> createUserContorller = userController.create(userForm, uriBuilder);
+        ResponseEntity<UserWithoutPasswordDTO> createUserContorller = userController.create(userForm, uriBuilder);
 
         Assert.assertEquals(createUserContorller.getBody().getId(), user.getId());
         Assert.assertEquals(createUserContorller.getBody().getUsername(), user.getUsername());
-        Assert.assertEquals(createUserContorller.getBody().getPassword(), user.getPassword());
     }
 
     @Test
@@ -56,7 +57,7 @@ class UserUnitTest {
         UserForm userForm = new UserForm("1", "validaPassword");
         User user = userForm.convert();
 
-        when(userRepository.findByUsername(user.getUsername())).thenReturn(new User(2L, "username123", "odksaod"));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(java.util.Optional.of(new User(2L, "username123", "odksaod")));
 
         Assert.assertThrows(BadRequestException.class, () -> {
             userController.create(userForm, uriBuilder);
@@ -86,6 +87,11 @@ class UserUnitTest {
         Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
         Assert.assertEquals("username", newUser.getUsername());
         Assert.assertEquals("password", newUser.getPassword());
+        Assert.assertEquals(true, newUser.isAccountNonExpired());
+        Assert.assertEquals(true, newUser.isAccountNonLocked());
+        Assert.assertEquals(true, newUser.isEnabled());
+        Assert.assertEquals(true, newUser.isCredentialsNonExpired());
+
     }
 
     @Test
