@@ -1,6 +1,5 @@
 package br.com.caelum.carangobom.user;
 
-import br.com.caelum.carangobom.exception.BadRequestException;
 import br.com.caelum.carangobom.exception.NotFoundException;
 import br.com.caelum.carangobom.services.user.UserService;
 import org.junit.Assert;
@@ -8,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -47,5 +44,4 @@ class UserServiceTest {
             userService.saveUserById(user.getId());
         });
     }
-
 }

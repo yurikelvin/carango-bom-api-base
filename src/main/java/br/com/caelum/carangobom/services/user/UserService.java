@@ -36,14 +36,4 @@ public class UserService {
         }
         throw new NotFoundException("Usuário não encontrado.");
     }
-
-    public UserWithoutPasswordDTO getUser(Long id){
-        var validatedUser = userRepository.findById(id);
-        if(validatedUser.isPresent()){
-            var convertedUser = UserWithoutPasswordDTO.convertSingleUser(validatedUser.get());
-            return convertedUser;
-        }
-        return null;
-    }
-
 }
