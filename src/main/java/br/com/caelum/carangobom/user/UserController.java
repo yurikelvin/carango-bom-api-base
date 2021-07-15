@@ -21,8 +21,12 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.userService = new UserService(this.userRepository);
     }
 
     @GetMapping("/users")
@@ -34,14 +38,12 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserWithoutPasswordDTO> details(@PathVariable Long id){
-        var userService = new UserService(userRepository);
         return userService.getUserById(id);
     }
 
     @PostMapping("/users")
     @Transactional
     public ResponseEntity<UserWithoutPasswordDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
-        var userService = new UserService(userRepository);
         User user = userForm.convert();
         return userService.createNewUser(user, uriBuilder);
     }
@@ -49,7 +51,6 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     @Transactional
     public ResponseEntity<UserWithoutPasswordDTO>delete(@PathVariable Long id) {
-        var userService = new UserService(userRepository);
         return userService.removeUserById(id);
     }
 }
