@@ -1,29 +1,23 @@
 package br.com.caelum.carangobom.vehicle;
 
-import br.com.caelum.carangobom.brand.BadRequestException;
 import br.com.caelum.carangobom.brand.Brand;
 import br.com.caelum.carangobom.brand.BrandService;
-import javassist.NotFoundException;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import br.com.caelum.carangobom.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
-import java.net.URI;
 import java.util.Optional;
 
-@AllArgsConstructor
-@Data
+@Service
 public class VehicleService {
+
     @Autowired
     private VehicleRepository vehicleRepository;
 
     @Autowired
     private BrandService brandService;
+
+    public VehicleService() {}
 
     public Vehicle create(VehicleForm vehicleForm) throws Exception {
 

@@ -1,13 +1,6 @@
 package br.com.caelum.carangobom.vehicle;
 
-import java.util.Optional;
-
 import br.com.caelum.carangobom.brand.Brand;
-import br.com.caelum.carangobom.brand.BrandRepository;
-import br.com.caelum.carangobom.brand.BadRequestException;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
 
 public class VehicleForm {
 

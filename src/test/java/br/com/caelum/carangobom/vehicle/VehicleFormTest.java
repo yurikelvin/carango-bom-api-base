@@ -1,23 +1,13 @@
 package br.com.caelum.carangobom.vehicle;
 
-import br.com.caelum.carangobom.user.UserController;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.caelum.carangobom.brand.Brand;
-import br.com.caelum.carangobom.brand.BrandRepository;
-import br.com.caelum.carangobom.brand.BadRequestException;
 
 import org.junit.Assert;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import static org.mockito.MockitoAnnotations.openMocks;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

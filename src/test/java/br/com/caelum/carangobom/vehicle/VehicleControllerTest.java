@@ -35,7 +35,7 @@ class VehicleControllerTest {
 	private MockMvc mockMvc;
 
 	@Test
-	public void shouldReturn400WhenTryUpdateVehicleWithNonexistentBrandId() throws Exception {
+	public void shouldReturn404WhenTryUpdateVehicleWithNonexistentBrandId() throws Exception {
 		Brand brand = brandRepository.save(new Brand("Audi"));
 		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
 
@@ -50,7 +50,7 @@ class VehicleControllerTest {
 				.put(uri)
 				.content(body.toString())
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
@@ -92,7 +92,7 @@ class VehicleControllerTest {
 	}
 
 	@Test
-	public void shouldReturn400WhenTryCreateVehicleWithNonexistentBrandId() throws Exception {
+	public void shouldReturn404WhenTryCreateVehicleWithNonexistentBrandId() throws Exception {
 
 		URI uri = new URI("/vehicles");
 
@@ -105,7 +105,7 @@ class VehicleControllerTest {
 				.post(uri)
 				.content(body.toString())
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
@@ -123,7 +123,7 @@ class VehicleControllerTest {
 	}
 
 	@Test
-	public void shouldReturn400WhenTryDeleteVehicleWithNonexistentVehicleId() throws Exception {
+	public void shouldReturn404WhenTryDeleteVehicleWithNonexistentVehicleId() throws Exception {
 
 		Brand brand = brandRepository.save(new Brand("Audi"));
 		vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
@@ -133,7 +133,7 @@ class VehicleControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders
 				.delete(uri)
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
@@ -160,7 +160,7 @@ class VehicleControllerTest {
 	}
 
 	@Test
-	public void shouldReturn400WhenTryFindOneWithNonexistentVehicleId() throws Exception {
+	public void shouldReturn404WhenTryFindOneWithNonexistentVehicleId() throws Exception {
 		Brand brand = brandRepository.save(new Brand("Audi"));
 		Vehicle vehicle = vehicleRepository.save(new Vehicle(brand, 2012, "TT"));
 		URI uri = new URI("/vehicles/" + 999);
@@ -169,7 +169,7 @@ class VehicleControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders
 				.get(uri)
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 	    
 }
