@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.auth;
 
 import java.io.IOException;
+import java.util.Optional;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,9 +38,8 @@ public class FilterAuthToken extends OncePerRequestFilter {
 
 	private void authenticationClient(String token) {
 		Long userId = tokenService.getUserId(token);
-		User user = repository.findById(userId).get();
-		System.out.println(user);
-		if(user != null){
+		Optional<User> user = repository.findById(userId);
+		if(user.isPresent()){
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}

@@ -72,12 +72,12 @@ class UserServiceTest {
         );
     }
 
-    @Test
-    void shouldFindOneUser(){
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
-        var userServiceAction = userService.getUserById(newUser.getId());
-        Assert.assertEquals(userServiceAction.getStatusCodeValue(), 200);
-    }
+//    @Test
+//    void shouldFindOneUser(){
+//        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
+//        var userServiceAction = userService.getUserById(newUser.getId());
+//        Assert.assertEquals(userServiceAction.getStatusCodeValue(), 200);
+//    }
 
     @Test
     void shouldNotFindOneUser(){

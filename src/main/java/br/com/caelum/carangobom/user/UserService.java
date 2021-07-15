@@ -12,6 +12,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.Optional;
 
+
+// TODO REFACTOR THE HANDLE OF THE SERVICES AND CONTROLLER
 @Service
 public class UserService {
 
@@ -22,45 +24,32 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    private UserDTO getValidatedUserWithoutPasswordDTO(Long id){
+    private User findById(Long id){
         var validatedUser = userRepository.findById(id);
         if(validatedUser.isPresent()){
-            return UserDTO.convertSingleUser(validatedUser.get());
-        }
-        return null;
-    }
-
-    public ResponseEntity getUserById(Long id){
-        var validatedUser = userRepository.findById(id);
-        if(validatedUser.isPresent()){
-            var convertedUser = UserDTO.convertSingleUser(validatedUser.get());
-            return ResponseEntity.status(HttpStatus.OK).body(convertedUser);
+            return validatedUser.get();
         }
         throw new NotFoundException("Usuário não encontrado.");
     }
 
-    public  ResponseEntity<UserDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
+    public void validateUser(User user){
         Optional<User> isCreated = userRepository.findByUsername(user.getUsername());
-
         if (isCreated.isPresent()) {
-            String errorMessage = "Usuário já cadastrado";
-            throw  new BadRequestException(errorMessage);
+            throw  new BadRequestException("Usuário já cadastrado");
         }
+    }
 
+    public  ResponseEntity<UserDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
         User encryptedUser = user;
         encryptedUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 
         userRepository.save(encryptedUser);
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(new UserDTO(user));
-
     }
 
     public ResponseEntity removeUserById(Long id){
-        var user = getValidatedUserWithoutPasswordDTO(id);
-        if(user == null){
-            throw new NotFoundException("Usuário não encontrado.");
-        }
+        var user = findById(id);
         userRepository.deleteById(user.getId());
         return ResponseEntity.ok().build();
     }
