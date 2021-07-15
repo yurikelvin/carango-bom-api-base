@@ -184,7 +184,10 @@ class UserUnitTest {
 
     @Test
     void shouldNotDeleteUserWithInvalidPathId(){
-        Assert.assertThrows(BadRequestException.class, () -> {
+        User newUser = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Assert.assertThrows(NotFoundException.class, () -> {
             userController.delete(1L);
         });
     }

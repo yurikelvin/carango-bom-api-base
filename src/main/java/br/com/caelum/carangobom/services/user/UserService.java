@@ -25,6 +25,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    private UserWithoutPasswordDTO getValidatedUserWithoutPasswordDTO(Long id){
+        var validatedUser = userRepository.findById(id);
+        if(validatedUser.isPresent()){
+            return UserWithoutPasswordDTO.convertSingleUser(validatedUser.get());
+        }
+        return null;
+    }
+
     public ResponseEntity getUserById(Long id){
         var validatedUser = userRepository.findById(id);
         if(validatedUser.isPresent()){
@@ -49,5 +57,14 @@ public class UserService {
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(new UserWithoutPasswordDTO(user));
 
+    }
+
+    public ResponseEntity removeUserById(Long id){
+        var user = getValidatedUserWithoutPasswordDTO(id);
+        if(user == null){
+            throw new NotFoundException("Usuário não encontrado.");
+        }
+        userRepository.deleteById(user.getId());
+        return ResponseEntity.ok().build();
     }
 }
