@@ -25,6 +25,14 @@ public class Vehicle {
 	public Vehicle() {
 		
 	}
+
+	public Vehicle(Long id, Brand brand, Integer year, String model, BigDecimal price) {
+		this.id = id;
+		this.brand = brand;
+		this.year = year;
+		this.model = model;
+		this.price = price;
+	}
 	
 	public Vehicle(Brand brand, Integer year, String model, BigDecimal price) {
 		this.brand = brand;
