@@ -3,6 +3,7 @@ package br.com.caelum.carangobom.user;
 import br.com.caelum.carangobom.exception.BadRequestException;
 import br.com.caelum.carangobom.exception.NotFoundException;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -11,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -36,11 +38,29 @@ class UserServiceTest {
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
     }
 
+
+    @Test
+    void shouldNotValidateUsernameAlreadyInUse(){
+        var user = new User(1L, "username", "password");
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        Assert.assertThrows(
+                BadRequestException.class, ()->
+                        userService.usernameAlreadyInUse(user)
+        );
+    }
+
+    @Test
+    void shouldPassUsernameAlreadyInUse(){
+        var user = new User(1L, "username", "password");
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+        Assertions.assertNull(userService.usernameAlreadyInUse(user));
+    }
+
     @Test
     void shouldRemoveUser(){
         when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
         var userServiceAction = userService.removeUserById(newUser.getId());
-        Assert.assertEquals(userServiceAction, true);
+        Assertions.assertTrue(userServiceAction);
     }
 
     @Test

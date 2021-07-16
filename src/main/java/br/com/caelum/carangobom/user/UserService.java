@@ -28,18 +28,18 @@ public class UserService {
         throw new NotFoundException("Usuário não encontrado.");
     }
 
-    public void usernameAlreadyInUse(User user){
+    public Object usernameAlreadyInUse(User user){
         Optional<User> isCreated = userRepository.findByUsername(user.getUsername());
         if (isCreated.isPresent()) {
             throw  new BadRequestException("Usuário já cadastrado");
         }
+        return null;
     }
 
     public User createNewUser(User user){
         usernameAlreadyInUse(user);
-        User encryptedUser = user;
-        encryptedUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        userRepository.save(encryptedUser);
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        userRepository.save(user);
         return user;
     }
 
