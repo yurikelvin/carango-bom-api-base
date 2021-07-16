@@ -57,7 +57,7 @@ class UserUnitTest {
         UserForm userForm = new UserForm("1", "validaPassword");
         User user = userForm.convert();
 
-        when(userRepository.findByUsername(user.getUsername())).thenReturn(java.util.Optional.of(new User(2L, "username123", "odksaod")));
+        when(userRepository.findByUsername(user.getUsername())).thenThrow(new BadRequestException());
 
         Assert.assertThrows(BadRequestException.class, () -> {
             userController.create(userForm, uriBuilder);

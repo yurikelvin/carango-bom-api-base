@@ -38,12 +38,9 @@ class UserServiceTest {
 
     @Test
     void shouldRemoveUser(){
-        User newUser = new User(1L, "username1", "password1");
         when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
-
         var userServiceAction = userService.removeUserById(newUser.getId());
-
-        Assert.assertEquals(userServiceAction.getStatusCodeValue(), 200);
+        Assert.assertEquals(userServiceAction, true);
     }
 
     @Test
@@ -58,8 +55,9 @@ class UserServiceTest {
     @Test
     void shouldCreateOneUser(){
         when(userRepository.save(newUser)).thenReturn(newUser);
-        var userServiceAction = userService.createNewUser(newUser, uriBuilder);
-        Assert.assertEquals(userServiceAction.getStatusCodeValue(), 201);
+        var userServiceAction = userService.createNewUser(newUser);
+        Assert.assertEquals(userServiceAction.getUsername(), newUser.getUsername());
+        Assert.assertEquals(userServiceAction.getId(), newUser.getId());
     }
 
     @Test
@@ -68,7 +66,7 @@ class UserServiceTest {
                 .thenThrow(new BadRequestException());
         Assert.assertThrows(
                 BadRequestException.class, ()->
-                        userService.createNewUser(newUser, uriBuilder)
+                        userService.createNewUser(newUser)
         );
     }
 
@@ -85,7 +83,7 @@ class UserServiceTest {
                 .thenThrow(new NotFoundException());
         Assert.assertThrows(
                 NotFoundException.class, ()->
-                        userService.createNewUser(newUser, uriBuilder)
+                        userService.createNewUser(newUser)
         );
     }
 

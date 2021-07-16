@@ -3,13 +3,9 @@ package br.com.caelum.carangobom.user;
 import br.com.caelum.carangobom.exception.BadRequestException;
 import br.com.caelum.carangobom.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Optional;
 
 
@@ -24,7 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    private User findById(Long id){
+    User findById(Long id){
         var validatedUser = userRepository.findById(id);
         if(validatedUser.isPresent()){
             return validatedUser.get();
@@ -32,25 +28,24 @@ public class UserService {
         throw new NotFoundException("Usuário não encontrado.");
     }
 
-    public void validateUser(User user){
+    public void usernameAlreadyInUse(User user){
         Optional<User> isCreated = userRepository.findByUsername(user.getUsername());
         if (isCreated.isPresent()) {
             throw  new BadRequestException("Usuário já cadastrado");
         }
     }
 
-    public  ResponseEntity<UserDTO> createNewUser(User user, UriComponentsBuilder uriBuilder){
+    public User createNewUser(User user){
+        usernameAlreadyInUse(user);
         User encryptedUser = user;
         encryptedUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-
         userRepository.save(encryptedUser);
-        URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UserDTO(user));
+        return user;
     }
 
-    public ResponseEntity removeUserById(Long id){
+    public boolean removeUserById(Long id){
         var user = findById(id);
         userRepository.deleteById(user.getId());
-        return ResponseEntity.ok().build();
+        return true;
     }
 }

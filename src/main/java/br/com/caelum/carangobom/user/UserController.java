@@ -7,6 +7,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -33,19 +34,25 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserDTO> details(@PathVariable Long id){
-        return userService.getUserById(id);
+        var getuser = userService.findById(id);
+        var formatedUser = UserDTO.convertSingleUser(getuser);
+        return ResponseEntity.ok(formatedUser);
     }
 
     @PostMapping("/users")
     @Transactional
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
-        User user = userForm.convert();
-        return userService.createNewUser(user, uriBuilder);
+        User convertedReceivedUser = userForm.convert();
+        var createdUser = userService.createNewUser(convertedReceivedUser);
+        URI uri = uriBuilder.path("/users/{id}").buildAndExpand(createdUser.getId()).toUri();
+        var convertedUserDTO = UserDTO.convertSingleUser(createdUser);
+        return ResponseEntity.created(uri).body(convertedUserDTO);
     }
 
     @DeleteMapping("/users/{id}")
     @Transactional
     public ResponseEntity<UserDTO>delete(@PathVariable Long id) {
-        return userService.removeUserById(id);
+        userService.removeUserById(id);
+        return ResponseEntity.ok().build();
     }
 }
