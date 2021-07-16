@@ -54,10 +54,5 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        try{
-
-        }catch (Exception e){
-            throw new Exception();
-        }
     }
 }
