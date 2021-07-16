@@ -2,10 +2,10 @@ package br.com.caelum.carangobom.vehicle;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.validator.internal.constraintvalidators.hv.ModCheckBase;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,9 @@ class VehicleControllerTest {
 				.put(uri)
 				.content(body.toString())
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
+				.andExpect(MockMvcResultMatchers.status().isNotFound())
+				.andExpect(response -> Assert.assertEquals("Brand not found", response.getResolvedException().getMessage()))
+		;
 	}
 
 	@Test
@@ -61,10 +63,18 @@ class VehicleControllerTest {
 
 		URI uri = new URI("/vehicles/" + vehicle.getId());
 
+		JSONObject expectedBody = new JSONObject();
+		expectedBody.put("brand", brand);
+		expectedBody.put("model", "TT Updated");
+		expectedBody.put("year", 2013);
+		expectedBody.put("price", 40000);
+		expectedBody.put("id", vehicle.getId());
+
 		JSONObject body = new JSONObject();
-		body.put("model", "TT");
+		body.put("model", "TT Updated");
 		body.put("brandId", brand.getId());
-		body.put("year", 2012);
+		body.put("year", 2013);
+		body.put("price", 40000);
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.put(uri)

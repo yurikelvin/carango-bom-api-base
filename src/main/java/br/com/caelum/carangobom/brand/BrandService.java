@@ -9,8 +9,12 @@ import java.util.Optional;
 @Service
 public class BrandService {
 
-    @Autowired
     private BrandRepository brandRepository;
+
+    @Autowired
+    public BrandService(BrandRepository brandRepository) {
+        this.brandRepository = brandRepository;
+    }
 
     public Brand findById(Long id) throws Exception {
         Optional<Brand> optional = brandRepository.findById(id);

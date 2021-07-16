@@ -11,23 +11,21 @@ import java.util.Optional;
 @Service
 public class VehicleService {
 
-    @Autowired
     private VehicleRepository vehicleRepository;
-
-    @Autowired
     private BrandService brandService;
 
-    public VehicleService() {}
-
     @Autowired
-    public VehicleService(VehicleRepository vehicleRepository) {
+    public VehicleService(VehicleRepository vehicleRepository, BrandService brandService) {
         this.vehicleRepository = vehicleRepository;
-        this.brandService = new BrandService();
+        this.brandService = brandService;
     }
+
+    public VehicleService() {}
 
     public Vehicle create(VehicleForm vehicleForm) throws Exception {
         Brand brand = brandService.findById(vehicleForm.getBrandId());
         Vehicle vehicle = vehicleForm.toVehicle(brand);
+
         return vehicleRepository.save(vehicle);
     }
 
