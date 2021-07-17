@@ -46,6 +46,7 @@ class VehicleControllerTest {
 		body.put("model", "TT");
 		body.put("brandId", 9999);
 		body.put("year", 2012);
+		body.put("price", 35000);
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.put(uri)
@@ -70,11 +71,13 @@ class VehicleControllerTest {
 		expectedBody.put("price", 40000);
 		expectedBody.put("id", vehicle.getId());
 
+
 		JSONObject body = new JSONObject();
 		body.put("model", "TT Updated");
 		body.put("brandId", brand.getId());
 		body.put("year", 2013);
 		body.put("price", 40000);
+
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.put(uri)
@@ -112,6 +115,7 @@ class VehicleControllerTest {
 		body.put("model", "TT");
 		body.put("brandId", 999L);
 		body.put("year", 2012);
+		body.put("price", 35000);
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.post(uri)
