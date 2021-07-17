@@ -34,6 +34,7 @@ class VehicleServiceTest {
     public BrandRepository brandRepository;
 
     public VehicleService vehicleService;
+
     Brand brand = new Brand(1l, "Audi");
     VehicleForm vehicleForm = new VehicleForm(this.brand.getId(), 2012, "TT", new BigDecimal(35000.50));
     Vehicle vehicle = new Vehicle(brand, 2012, "TT", new BigDecimal(35000.50));
@@ -43,6 +44,7 @@ class VehicleServiceTest {
         openMocks(this);
         this.brandService = spy(new BrandService(this.brandRepository));
         this.vehicleService = spy(new VehicleService(this.vehicleRepository, this.brandService));
+
     }
 
     @Test
@@ -91,6 +93,23 @@ class VehicleServiceTest {
     }
 
     @Test
+    void shouldReturnUpdatedVehicle() throws Exception {
+        VehicleForm updatedVehicleForm = new VehicleForm(brand.getId(), 2000, "TT updated", new BigDecimal(50000));
+
+        doReturn(brand).when(this.brandService).findById(anyLong());
+        when(this.vehicleRepository.findById(anyLong())).thenReturn(java.util.Optional.ofNullable(vehicle));
+        doReturn(vehicle).when(this.vehicleService).findById(anyLong());
+
+        Vehicle result = this.vehicleService.update(1L, updatedVehicleForm);
+
+        Assert.assertEquals(vehicle.getPrice(), result.getPrice());
+        Assert.assertEquals(vehicle.getModel(), result.getModel());
+        Assert.assertEquals(vehicle.getYear(), result.getYear());
+        Assert.assertEquals(vehicle.getBrand().getId(), result.getBrand().getId());
+        Assert.assertEquals(vehicle.getBrand().getName(), result.getBrand().getName());
+    }
+
+    @Test
     void shouldReturn404WhenTryFindByIdVehicleWithNonexistentVehicleId() throws Exception {
         when(this.vehicleRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -98,6 +117,25 @@ class VehicleServiceTest {
             vehicleService.findById(1L);
         });
     }
+
+    @Test
+    void shouldDeleteVehicle() throws Exception {
+        doReturn(vehicle).when(this.vehicleService).findById(anyLong());
+        Vehicle result = this.vehicleService.delete(1L);
+
+        Assert.assertEquals(vehicle.getPrice(), result.getPrice());
+        Assert.assertEquals(vehicle.getModel(), result.getModel());
+        Assert.assertEquals(vehicle.getYear(), result.getYear());
+        Assert.assertEquals(vehicle.getBrand().getId(), result.getBrand().getId());
+        Assert.assertEquals(vehicle.getBrand().getName(), result.getBrand().getName());
+    }
+
+    @Test
+    void shouldReturn404WhenTryDeleteWhitNonexistentVehicleId() throws Exception {
+        doThrow(NotFoundException.class).when(this.vehicleService).findById(anyLong());
+        Assert.assertThrows(NotFoundException.class, () -> vehicleService.delete(1L));
+    }
+
 
     @Test
     void shouldReturnVehicleWhenTryFindById() throws Exception {
@@ -111,7 +149,5 @@ class VehicleServiceTest {
         Assert.assertEquals(vehicle.getBrand().getId(), result.getBrand().getId());
         Assert.assertEquals(vehicle.getBrand().getName(), result.getBrand().getName());
     }
-
-
 
 }

@@ -35,6 +35,7 @@ public class VehicleService {
         Vehicle vehicle = this.findById(id);
 
         vehicle.setModel(vehicleData.getModel());
+        vehicle.setPrice(vehicleData.getPrice());
         vehicle.setBrand(vehicleData.getBrand());
         vehicle.setYear(vehicleData.getYear());
 

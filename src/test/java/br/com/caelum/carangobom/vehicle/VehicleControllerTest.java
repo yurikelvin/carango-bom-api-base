@@ -93,7 +93,8 @@ class VehicleControllerTest {
 		JSONObject body = new JSONObject();
 		body.put("model", "TT");
 		body.put("brandId", brand.getId());
-		body.put("year", 2012);
+		body.put("year", 2010);
+		body.put("price", 35000.50);
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.post(uri)
