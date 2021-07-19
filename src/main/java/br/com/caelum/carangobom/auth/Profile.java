@@ -20,6 +20,9 @@ public class Profile implements GrantedAuthority {
 
     private String name;
 
+    public Profile() {
+    }
+
     @Override
     public String getAuthority() {
         return this.name;
