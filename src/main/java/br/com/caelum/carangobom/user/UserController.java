@@ -19,7 +19,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private final UserService userService;
+    private  UserService userService;
 
     @Autowired
     public UserController(UserRepository userRepository) {
