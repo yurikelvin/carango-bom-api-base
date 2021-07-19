@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.user;
 
+import br.com.caelum.carangobom.auth.Profile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

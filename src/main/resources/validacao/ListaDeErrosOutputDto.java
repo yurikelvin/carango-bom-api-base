@@ -1,8 +1,7 @@
-package br.com.caelum.carangobom.validacao;
+package br.com.caelum.carangobom.validation;
 
 import java.util.List;
 
-// TODO - Refactor / Translate
 public class ListaDeErrosOutputDto {
 
     private List<ErroDeParametroOutputDto> erros;

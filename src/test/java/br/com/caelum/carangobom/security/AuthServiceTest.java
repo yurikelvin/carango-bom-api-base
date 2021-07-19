@@ -1,13 +1,12 @@
 package br.com.caelum.carangobom.security;
 
-import br.com.caelum.carangobom.config.security.AuthenticationService;
+import br.com.caelum.carangobom.auth.AuthService;
 import br.com.caelum.carangobom.user.User;
 import br.com.caelum.carangobom.user.UserRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import static org.mockito.Mockito.when;
@@ -20,12 +19,12 @@ class AuthServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private AuthenticationService authenticationService;
+    private AuthService authService;
 
     @BeforeEach
     void setUp() {
         openMocks(this);
-        authenticationService = new AuthenticationService(userRepository);
+        authService = new AuthService(userRepository);
     }
 
     @Test
@@ -35,7 +34,7 @@ class AuthServiceTest {
 
         when(userRepository.findByUsername(newUser.getUsername())).thenReturn(java.util.Optional.of(newUser));
 
-        var authAction = authenticationService.loadUserByUsername(newUser.getUsername());
+        var authAction = authService.loadUserByUsername(newUser.getUsername());
 
         Assert.assertEquals(authAction.getUsername(), newUser.getUsername());
     }
@@ -47,7 +46,7 @@ class AuthServiceTest {
         when(userRepository.findByUsername(userName)).thenReturn(java.util.Optional.empty());
 
         Assert.assertThrows(UsernameNotFoundException.class, () -> {
-            authenticationService.loadUserByUsername(userName);
+            authService.loadUserByUsername(userName);
         });
     }
 }
