@@ -20,7 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    User findById(Long id){
+    public User findById(Long id){
         var validatedUser = userRepository.findById(id);
         if(validatedUser.isPresent()){
             return validatedUser.get();

@@ -22,8 +22,6 @@ class UserServiceTest {
 
     private UserService userService;
 
-    private UriComponentsBuilder uriBuilder;
-
     @Mock
     private UserRepository userRepository;
 
@@ -35,7 +33,6 @@ class UserServiceTest {
     public void configuraMock() {
         openMocks(this);
         userService = new UserService(userRepository);
-        uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
     }
 
 
@@ -76,8 +73,8 @@ class UserServiceTest {
     void shouldCreateOneUser(){
         when(userRepository.save(newUser)).thenReturn(newUser);
         var userServiceAction = userService.createNewUser(newUser);
-        Assert.assertEquals(userServiceAction.getUsername(), newUser.getUsername());
-        Assert.assertEquals(userServiceAction.getId(), newUser.getId());
+        Assertions.assertEquals(userServiceAction.getUsername(), newUser.getUsername());
+        Assertions.assertEquals(userServiceAction.getId(), newUser.getId());
     }
 
     @Test
@@ -90,12 +87,12 @@ class UserServiceTest {
         );
     }
 
-//    @Test
-//    void shouldFindOneUser(){
-//        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
-//        var userServiceAction = userService.getUserById(newUser.getId());
-//        Assert.assertEquals(userServiceAction.getStatusCodeValue(), 200);
-//    }
+    @Test
+    void shouldFindOneUser(){
+        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
+        var userServiceAction = userService.findById(newUser.getId());
+        Assertions.assertEquals(userServiceAction.getId(), newUser.getId());
+    }
 
     @Test
     void shouldNotFindOneUser(){
