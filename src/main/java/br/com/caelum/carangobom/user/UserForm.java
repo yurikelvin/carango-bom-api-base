@@ -21,6 +21,9 @@ public class UserForm {
     @Size(min = 3, max = 50, message = "A senha deve ser maior que {min} e menor que {max}")
     private String password;
 
+    public UserForm(User user) {
+    }
+
     public User toUser(){
         return new User(username, password);
     }

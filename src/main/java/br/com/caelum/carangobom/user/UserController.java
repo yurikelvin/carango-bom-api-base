@@ -1,6 +1,8 @@
 package br.com.caelum.carangobom.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,7 +19,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserRepository userRepository) {
@@ -26,6 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
+    @Cacheable("user-list")
     public List<UserDTO> listAll() {
         // TODO create the user pagination
         List<User> users = userRepository.findAll();
@@ -41,6 +44,7 @@ public class UserController {
 
     @PostMapping("/users")
     @Transactional
+    @CacheEvict(value = "user-list", allEntries = true)
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
         User convertedReceivedUser = userForm.toUser();
         var createdUser = userService.createNewUser(convertedReceivedUser);
@@ -51,6 +55,7 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     @Transactional
+    @CacheEvict(value = "user-list", allEntries = true)
     public ResponseEntity<UserDTO>delete(@PathVariable Long id) {
         userService.removeUserById(id);
         return ResponseEntity.ok().build();
