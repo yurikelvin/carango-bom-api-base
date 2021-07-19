@@ -2,7 +2,6 @@ package br.com.caelum.carangobom.validacao;
 
 import java.util.List;
 
-// TODO - Refactor / Translate
 public class ListaDeErrosOutputDto {
 
     private List<ErroDeParametroOutputDto> erros;

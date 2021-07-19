@@ -1,31 +1,25 @@
 package br.com.caelum.carangobom.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Data
+@AllArgsConstructor
 public class UserDTO {
-
     private Long id;
     private String username;
-    private String password;
 
     public UserDTO(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
     }
 
-    public Long getId() {  return id; }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public static List<UserDTO> convert(List<User> users) {
+    public static List<UserDTO> toUserList(List<User> users) {
         return users.stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    public static UserDTO toUser(User user){
+        return new UserDTO(user);
     }
 }

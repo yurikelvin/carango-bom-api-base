@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom.config.security;
+package br.com.caelum.carangobom.auth.token;
 
 import br.com.caelum.carangobom.user.User;
 import io.jsonwebtoken.Claims;
@@ -22,21 +22,21 @@ public class TokenService {
     public TokenService() {
     }
 
-    public String gerarToken(Authentication authentication) {
-        User logado = (User) authentication.getPrincipal();
-        Date hoje = new Date();
-        Date dataExpiracao = new Date(hoje.getTime() + Long.parseLong(expiration));
+    public String generateToken(Authentication authentication) {
+        User signedUser = (User) authentication.getPrincipal();
+        Date today = new Date();
+        Date expDate = new Date(today.getTime() + Long.parseLong(expiration));
 
         return Jwts.builder()
                 .setIssuer("API carango")
-                .setSubject(logado.getId().toString())
-                .setIssuedAt(hoje)
-                .setExpiration(dataExpiracao)
+                .setSubject(signedUser.getId().toString())
+                .setIssuedAt(today)
+                .setExpiration(expDate)
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
-    public boolean isTokenValido(String token) {
+    public boolean isValid(String token) {
         try {
             Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
             return true;
@@ -45,7 +45,7 @@ public class TokenService {
         }
     }
 
-    public Long getIdUsuario(String token) {
+    public Long getUserId(String token) {
         Claims claims = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
         return Long.parseLong(claims.getSubject());
     }

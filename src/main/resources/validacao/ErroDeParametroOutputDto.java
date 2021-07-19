@@ -1,6 +1,5 @@
 package br.com.caelum.carangobom.validacao;
 
-// TODO - Refactor / Translate
 public class ErroDeParametroOutputDto {
 
     private String parametro;
