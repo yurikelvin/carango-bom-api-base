@@ -19,7 +19,6 @@ public class Brand {
     private String name;
 
     public Brand() {
-
     }
 
     public Brand(String name) {
