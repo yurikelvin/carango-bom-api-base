@@ -29,23 +29,23 @@ public class UserController {
     public List<UserDTO> listAll() {
         // TODO create the user pagination
         List<User> users = userRepository.findAll();
-        return UserDTO.convert(users);
+        return UserDTO.toUserList(users);
     }
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserDTO> details(@PathVariable Long id){
         var getuser = userService.findById(id);
-        var formatedUser = UserDTO.convertSingleUser(getuser);
+        var formatedUser = UserDTO.toUser(getuser);
         return ResponseEntity.ok(formatedUser);
     }
 
     @PostMapping("/users")
     @Transactional
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm, UriComponentsBuilder uriBuilder) {
-        User convertedReceivedUser = userForm.convert();
+        User convertedReceivedUser = userForm.toUser();
         var createdUser = userService.createNewUser(convertedReceivedUser);
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(createdUser.getId()).toUri();
-        var convertedUserDTO = UserDTO.convertSingleUser(createdUser);
+        var convertedUserDTO = UserDTO.toUser(createdUser);
         return ResponseEntity.created(uri).body(convertedUserDTO);
     }
 
