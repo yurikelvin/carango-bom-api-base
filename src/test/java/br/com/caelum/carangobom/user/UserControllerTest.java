@@ -33,7 +33,6 @@ class UserControllerTest {
     public void mockConfig() {
         openMocks(this);
         userController = new UserController(userRepository);
-        userService = spy(new UserService(userRepository));
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
     }
 
@@ -41,7 +40,7 @@ class UserControllerTest {
     void shouldCreateANewUser(){
         UserForm userForm = new UserForm("username", "validaPassword");
         User user  = userForm.toUser();
-        doReturn(user).when(this.userService).createNewUser(user);
+        when(this.userService.createNewUser(user)).thenReturn(user);
         ResponseEntity<UserDTO> createUserController = userController.create(userForm, uriBuilder);
         assertEquals(createUserController.getStatusCodeValue(), 201);
     }
