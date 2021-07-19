@@ -2,6 +2,7 @@ package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.auth.Profile;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
@@ -13,8 +14,6 @@ class ProfileTest {
 
     @Test
     void shouldTestProfileConstructor(){
-        Mockito.mock(Profile.class);
-
         Optional<Profile> profile = Optional.of(new Profile());
         profile.get().setId(1L);
         profile.get().setName("Test name");
@@ -23,9 +22,9 @@ class ProfileTest {
         var profileName = profile.get().getName();
         var profileAuth = profile.get().getAuthority();
 
-        Assert.assertEquals(1L, profileId.intValue());
-        Assert.assertEquals("Test name", profileName.toString());
-        Assert.assertEquals("Test name", profileAuth.toString());
+        Assertions.assertEquals(1L, profileId.intValue());
+        Assertions.assertEquals("Test name", profileName.toString());
+        Assertions.assertEquals("Test name", profileAuth.toString());
 
     }
 }
