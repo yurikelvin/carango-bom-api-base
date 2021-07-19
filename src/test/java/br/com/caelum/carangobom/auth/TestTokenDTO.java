@@ -1,9 +1,8 @@
 package br.com.caelum.carangobom.auth;
 
-import br.com.caelum.carangobom.user.User;
+import br.com.caelum.carangobom.auth.token.TokenDTO;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")

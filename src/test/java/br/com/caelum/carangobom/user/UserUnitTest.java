@@ -1,23 +1,26 @@
 package br.com.caelum.carangobom.user;
 
 import br.com.caelum.carangobom.exception.BadRequestException;
-import javassist.NotFoundException;
+import br.com.caelum.carangobom.exception.NotFoundException;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -43,13 +46,10 @@ class UserUnitTest {
     void shouldCreateANewUser(){
         UserForm userForm = new UserForm("1", "validaPassword");
         User user = userForm.convert();
-
         when(userRepository.save(user)).thenReturn(user);
-
-        ResponseEntity<UserWithoutPasswordDTO> createUserContorller = userController.create(userForm, uriBuilder);
-
-        Assert.assertEquals(createUserContorller.getBody().getId(), user.getId());
-        Assert.assertEquals(createUserContorller.getBody().getUsername(), user.getUsername());
+        ResponseEntity<UserDTO> createUserContorller = userController.create(userForm, uriBuilder);
+        assertEquals(createUserContorller.getBody().getId(), user.getId());
+        assertEquals(createUserContorller.getBody().getUsername(), user.getUsername());
     }
 
     @Test
@@ -57,7 +57,7 @@ class UserUnitTest {
         UserForm userForm = new UserForm("1", "validaPassword");
         User user = userForm.convert();
 
-        when(userRepository.findByUsername(user.getUsername())).thenReturn(java.util.Optional.of(new User(2L, "username123", "odksaod")));
+        when(userRepository.findByUsername(user.getUsername())).thenThrow(new BadRequestException());
 
         Assert.assertThrows(BadRequestException.class, () -> {
             userController.create(userForm, uriBuilder);
@@ -71,49 +71,42 @@ class UserUnitTest {
         userForm.setUsername("username");
         userForm.setPassword("password");
 
-        Assert.assertEquals("username", userForm.getUsername());
-        Assert.assertEquals("password", userForm.getPassword());
+        assertEquals("username", userForm.getUsername());
+        assertEquals("password", userForm.getPassword());
     }
 
     @Test
     void shouldTestIncrementUserWithoutConstructor() {
-        Mockito.mock(User.class);
         User newUser = new User();
 
         newUser.setId(1L);
         newUser.setUsername("username");
         newUser.setPassword("password");
 
-        Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
-        Assert.assertEquals("username", newUser.getUsername());
-        Assert.assertEquals("password", newUser.getPassword());
-        Assert.assertEquals(true, newUser.isAccountNonExpired());
-        Assert.assertEquals(true, newUser.isAccountNonLocked());
-        Assert.assertEquals(true, newUser.isEnabled());
-        Assert.assertEquals(true, newUser.isCredentialsNonExpired());
-
+        assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
+        assertEquals("username", newUser.getUsername());
+        assertEquals("password", newUser.getPassword());
+        assertTrue(newUser.isAccountNonExpired());
+        assertTrue(newUser.isAccountNonLocked());
+        assertTrue(newUser.isEnabled());
+        assertTrue(newUser.isCredentialsNonExpired());
     }
 
     @Test
     void shouldTestIncrementUserWithConstructor() {
-        Mockito.mock(User.class);
         User newUser = new User(1L, "username", "password");
 
-        Assert.assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
-        Assert.assertEquals("username", newUser.getUsername());
-        Assert.assertEquals("password", newUser.getPassword());
+        assertEquals(java.util.Optional.of(1L).get(), newUser.getId());
+        assertEquals("username", newUser.getUsername());
+        assertEquals("password", newUser.getPassword());
     }
 
     @Test
     void shouldTestUserDTO() {
         User newUser = new User(1L, "username", "password");
-        Mockito.mock(UserDTO.class);
-
         UserDTO userDTO = new UserDTO(newUser);
-
-        Assert.assertEquals(newUser.getId(), userDTO.getId());
-        Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
-        Assert.assertEquals(newUser.getPassword(), userDTO.getPassword());
+        assertEquals(newUser.getId(), userDTO.getId());
+        assertEquals(newUser.getUsername(), userDTO.getUsername());
     }
 
     @Test
@@ -124,7 +117,7 @@ class UserUnitTest {
         );
 
         List<UserDTO> userConvertDTO = UserDTO.convert(userList);
-        Assert.assertEquals(userConvertDTO.size(), userList.size());
+        assertEquals(userConvertDTO.size(), userList.size());
     }
 
     @Test
@@ -136,37 +129,36 @@ class UserUnitTest {
 
         when(userRepository.findAll()).thenReturn(userList);
 
-        List<UserWithoutPasswordDTO> userListController = userController.listAll();
+        List<UserDTO> userListController = userController.listAll();
 
         assertEquals(userList.size(),userListController.size());
     }
 
     @Test
     void shouldFindUserWithPathId(){
-        User newUser = new User(1L, "username1", "password1");
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
-        ResponseEntity<UserWithoutPasswordDTO> findById = userController.details(1L);
-        Assert.assertEquals(findById.getBody().getId(), newUser.getId());
-        Assert.assertEquals(findById.getBody().getUsername(), newUser.getUsername());
+        User user = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        var findById = userController.details(user.getId());
+        assertEquals(findById.getStatusCodeValue(), 200);
     }
 
     @Test
     void shouldNotFindUserWithInvalidPathId(){
-        Assert.assertThrows(BadRequestException.class, () -> {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        Assert.assertThrows(NotFoundException.class, () -> {
             userController.details(1L);
         });
     }
 
-
     @Test
     void shouldReceiveTheUserFormValues(){
         User newUser = new User(1L, "username", "password");
-        Mockito.mock(UserWithoutPasswordDTO.class);
+        Mockito.mock(UserDTO.class);
 
-        UserWithoutPasswordDTO userDTO = new UserWithoutPasswordDTO(newUser);
+        UserDTO userDTO = new UserDTO(newUser);
 
-        Assert.assertEquals(newUser.getId(), userDTO.getId());
-        Assert.assertEquals(newUser.getUsername(), userDTO.getUsername());
+        assertEquals(newUser.getId(), userDTO.getId());
+        assertEquals(newUser.getUsername(), userDTO.getUsername());
     }
 
     @Test
@@ -175,14 +167,17 @@ class UserUnitTest {
 
         when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
 
-        ResponseEntity<UserWithoutPasswordDTO> userControllerDelete = userController.delete(1L);
+        ResponseEntity<UserDTO> userControllerDelete = userController.delete(1L);
 
-        Assert.assertEquals(userControllerDelete.getStatusCodeValue(), 200);
+        assertEquals(userControllerDelete.getStatusCodeValue(), 200);
     }
 
     @Test
     void shouldNotDeleteUserWithInvalidPathId(){
-        Assert.assertThrows(BadRequestException.class, () -> {
+        User newUser = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Assert.assertThrows(NotFoundException.class, () -> {
             userController.delete(1L);
         });
     }
