@@ -51,10 +51,4 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
                 .and().addFilterBefore(new FilterAuthToken(tokenService, userRepository), UsernamePasswordAuthenticationFilter.class);
 
     }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {}
-
-
-
 }
