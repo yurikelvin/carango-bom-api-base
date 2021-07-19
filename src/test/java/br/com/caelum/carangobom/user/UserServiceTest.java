@@ -28,9 +28,8 @@ class UserServiceTest {
     User newUser = new User(1L, "username1", "password1");
     UserForm userForm = new UserForm("username1", "password1");
 
-
     @BeforeEach
-    public void configuraMock() {
+    public void mockConfig() {
         openMocks(this);
         userService = new UserService(userRepository);
     }

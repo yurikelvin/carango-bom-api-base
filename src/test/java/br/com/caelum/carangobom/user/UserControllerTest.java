@@ -1,155 +1,125 @@
 package br.com.caelum.carangobom.user;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import br.com.caelum.carangobom.exception.BadRequestException;
+import br.com.caelum.carangobom.exception.NotFoundException;
+import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import java.net.URI;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    private UserController userController;
+    private UriComponentsBuilder uriBuilder;
 
-    @Autowired
-    private UserRepository repository;
+    @Mock
+    private UserRepository userRepository;
 
-    @Autowired
-    private EntityManager entityManager;
+    @Mock
+    private UserService userService;
 
-    public void shouldReturnTheListOfUser() throws Exception {
-        URI uri = new URI("/users");
-        mockMvc.perform(MockMvcRequestBuilders
-                .get(uri)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is(200));
-    }
+    @BeforeEach
+    public void mockConfig() {
+        openMocks(this);
 
-    @Transactional
-    @Test
-    public void shouldNotCreateANewUserWithTheSameUsername() throws Exception {
-        URI uri = new URI("/users");
-
-        UserForm newUserForm = new UserForm("username", "password");
-        User converted = newUserForm.convert();
-        entityManager.persist(converted);
-        entityManager.flush();
-
-        String json = "{\"username\": \"username\", \"password\": \"newpassword\"}";
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(uri)
-                .content(json)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is(400));
-    }
-
-    @Test
-    public void shouldReturnErrorWhenDoesNotHaveUsername() throws Exception {
-        URI uri = new URI("/users");
-
-        String json = "{\"username\": \"\", \"password\": \"newpassword\"}";
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(uri)
-                .content(json)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        userController = new UserController(userRepository);
+        userService = spy(new UserService(userRepository));
+        uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
 
     }
 
     @Test
-    public void shouldReturnErrorWhenDoesNotHavePassword() throws Exception {
-        URI uri = new URI("/users");
-
-        String json = "{\"username\": \"username\", \"password\": \"\"}";
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(uri)
-                .content(json)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    void shouldCreateANewUser(){
+        UserForm userForm = new UserForm("1", "validaPassword");
+        User user  = userForm.toUser();
+        when(userRepository.save(user)).thenReturn(user);
+        doReturn(user).when(this.userService).createNewUser(any());
+        ResponseEntity<UserDTO> createUserController = userController.create(userForm, uriBuilder);
+        assertEquals(Objects.requireNonNull(createUserController.getBody()).getId(), user.getId());
     }
 
     @Test
-    public void shouldReturnTheListOfUsers() throws Exception {
-
-        URI uri = new URI("/users");
-        mockMvc.perform(MockMvcRequestBuilders
-                .get(uri)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is(200));
-
+    void shouldNotCreateANewUserWithTheSameUsername() {
+        UserForm userForm = new UserForm("1", "validaPassword");
+        User user  = userForm.toUser();
+        when(userRepository.findByUsername(user.getUsername())).thenThrow(NotFoundException.class);
+        doThrow(BadRequestException.class).when(this.userService).createNewUser(any());
+        Assert.assertThrows(NotFoundException.class, () -> {
+            userController.create(userForm, uriBuilder);
+        });
     }
 
-    @Transactional
+
     @Test
-    public void shouldFindUserById() throws Exception {
-        UserForm newUserForm = new UserForm("username", "password");
-        User converted = newUserForm.convert();
-        entityManager.persist(converted);
-        entityManager.flush();
+    void shouldTestUserDTO_Convert() {
+        List<User> userList = List.of(
+                new User(1L, "username1", "password1"),
+                new User(2L, "username2", "password2")
+        );
 
-        URI uri = new URI("/users/" + converted.getId());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .get(uri)
-                .contentType(MediaType.APPLICATION_JSON))
-                // TODO RETORNO DEVE SER 200
-                .andExpect(MockMvcResultMatchers.status().is(403));
+        List<UserDTO> userConvertDTO = UserDTO.toUserList(userList);
+        assertEquals(userConvertDTO.size(), userList.size());
     }
 
-
-    @Transactional
     @Test
-    public void shouldDeleteTheUserWithPathId() throws Exception {
-        UserForm newUserForm = new UserForm("username", "password");
-        User converted = newUserForm.convert();
-        converted.setPassword(new BCryptPasswordEncoder().encode(converted.getPassword()));
-        entityManager.persist(converted);
-        entityManager.flush();
+    void shouldTestListAll() {
+        List<User> userList = List.of(
+                new User(1L, "username1", "password1"),
+                new User(2L, "username2", "password2")
+        );
 
-        var accessToken = new BCryptPasswordEncoder().encode(converted.getPassword());
-        URI uri = new URI("/users/" + converted.getId());
+        when(userRepository.findAll()).thenReturn(userList);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete(uri)
-                .header("Authorization", "Bearer " + accessToken)
-                .contentType(MediaType.APPLICATION_JSON))
-                // TODO should return 200
-                .andExpect(MockMvcResultMatchers.status().is(403));
+        List<UserDTO> userListController = userController.listAll();
+
+        assertEquals(userList.size(),userListController.size());
     }
 
-    @Transactional
     @Test
-    public void shouldNotDeleteTheUserWithInvalidPathId() throws Exception {
-        UserForm newUserForm = new UserForm("username", "password");
-        User converted = newUserForm.convert();
-        entityManager.persist(converted);
-        entityManager.flush();
-
-        URI uri = new URI("/users/" + 123);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete(uri)
-                .contentType(MediaType.APPLICATION_JSON))
-                // TODO RETORNO DEVE SER 400
-                .andExpect(MockMvcResultMatchers.status().is(403));
+    void shouldFindUserWithPathId(){
+        User user = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        var findById = userController.details(user.getId());
+        assertEquals(findById.getStatusCodeValue(), 200);
     }
 
+    @Test
+    void shouldNotFindUserWithInvalidPathId(){
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        Assert.assertThrows(NotFoundException.class, () -> {
+            userController.details(1L);
+        });
+    }
 
+    @Test
+    void shouldDeleteUserWithPathId(){
+        User newUser = new User(1L, "username1", "password1");
+
+        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(newUser));
+
+        ResponseEntity<UserDTO> userControllerDelete = userController.delete(1L);
+
+        assertEquals(userControllerDelete.getStatusCodeValue(), 200);
+    }
+
+    @Test
+    void shouldNotDeleteUserWithInvalidPathId(){
+        User newUser = new User(1L, "username1", "password1");
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Assert.assertThrows(NotFoundException.class, () -> {
+            userController.delete(1L);
+        });
+    }
 }
