@@ -41,12 +41,12 @@ class UserControllerTest {
 
     @Test
     void shouldCreateANewUser(){
-        UserForm userForm = new UserForm("1", "validaPassword");
+        UserForm userForm = new UserForm("username", "validaPassword");
         User user  = userForm.toUser();
         when(userRepository.save(user)).thenReturn(user);
-        doReturn(user).when(this.userService).createNewUser(any());
+        doReturn(user).when(this.userService).createNewUser(user);
         ResponseEntity<UserDTO> createUserController = userController.create(userForm, uriBuilder);
-        assertEquals(Objects.requireNonNull(createUserController.getBody()).getId(), user.getId());
+        assertEquals(createUserController.getStatusCodeValue(), 201);
     }
 
     @Test

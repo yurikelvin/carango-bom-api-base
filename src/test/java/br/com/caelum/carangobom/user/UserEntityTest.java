@@ -2,6 +2,7 @@ package br.com.caelum.carangobom.user;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class UserEntityTest {
 
@@ -27,5 +28,7 @@ public class UserEntityTest {
         String username = "user";
         String password = "password";
         User user = new User(username, password);
+        Assert.assertEquals(user.getUsername(), username);
+        Assert.assertEquals(user.getPassword(), password);
     }
 }
