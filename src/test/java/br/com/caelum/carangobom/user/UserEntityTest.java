@@ -2,7 +2,6 @@ package br.com.caelum.carangobom.user;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 public class UserEntityTest {
 
