@@ -36,11 +36,16 @@ import br.com.caelum.carangobom.validacao.ListaDeErrosOutputDto;
 @RequestMapping("/vehicles")
 public class VehicleController {
 
-	@Autowired
 	private VehicleRepository vehicleRepository;
+	private VehicleService vehicleService;
+
+	public VehicleController() {}
 
 	@Autowired
-	private VehicleService vehicleService;
+	public VehicleController(VehicleRepository vehicleRepository, VehicleService vehicleService) {
+		this.vehicleRepository = vehicleRepository;
+		this.vehicleService = vehicleService;
+	}
 
 	@GetMapping
 	public Page<Vehicle> findAll(
