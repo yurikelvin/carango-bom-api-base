@@ -6,11 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Data
 @AllArgsConstructor
 public class Dashboard {
-    public Brand brand;
-    public Integer totalVehicle ;
+    public String brand;
+    public BigInteger totalVehicle ;
     public BigDecimal totalPrice;
 }
