@@ -1,31 +1,21 @@
 package br.com.caelum.carangobom.dashboard;
 
-import br.com.caelum.carangobom.user.User;
 import br.com.caelum.carangobom.vehicle.VehicleRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import javax.management.Query;
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+@SpringBootTest
 @ActiveProfiles("test")
 public class DashboardControllerTest {
-
-
     @Mock
     private VehicleRepository vehicleRepository;
 
@@ -47,4 +37,17 @@ public class DashboardControllerTest {
         List<Dashboard> dashboardAction = Dashboard.toDashboard(dashboardList);
         Assert.assertEquals(dashboardAction.size(), dashboardList.size());
     }
+
+    /*
+    @Test
+    public void testingTheConvertMethod(){
+        List<List<Object>> dashboardList =
+                List.of(
+                        List.of("Brand 1", new BigInteger(String.valueOf(2)), new BigDecimal(2000000)),
+                        List.of("Brand 2", new BigInteger(String.valueOf(3)), new BigDecimal(54000000))
+                );
+        when(vehicleRepository.getDashboard()).thenReturn(dashboardList);
+        var test = dashboardController.getAll();
+    }
+     */
 }

@@ -13,9 +13,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class Dashboard {
-    public String brand;
-    public BigInteger totalVehicle;
-    public BigDecimal totalPrice;
+     String brand;
+     BigInteger totalVehicle;
+     BigDecimal totalPrice;
 
     public static List<Dashboard> toDashboard(List<List<Object>> dashboard){
         List<Dashboard> listDashboard = new ArrayList<>(1);

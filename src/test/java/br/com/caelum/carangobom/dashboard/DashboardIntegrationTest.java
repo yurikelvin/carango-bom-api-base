@@ -33,12 +33,21 @@ public class DashboardIntegrationTest {
     private EntityManager entityManager;
 
     @Test
-    public void shouldReturn200WhenGetTheListOfUser() throws Exception {
+    public void shouldReturn200WhenGetTheListOfVehicleWithPrices() throws Exception {
         URI uri = new URI("/dashboard");
         mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void shouldReturn404WhenSearchWithQueryParams() throws Exception {
+        URI uri = new URI("/dashboard/2");
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 }

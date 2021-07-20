@@ -16,7 +16,6 @@ public class DashboardController {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    @Autowired
     public DashboardController(VehicleRepository vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
     }
