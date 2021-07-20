@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom.validacao;
+package br.com.caelum.carangobom.validation;
 
 // TODO - Refactor / Translate
 public class ErroDeParametroOutputDto {
