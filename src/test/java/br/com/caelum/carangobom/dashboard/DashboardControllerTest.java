@@ -37,17 +37,4 @@ public class DashboardControllerTest {
         List<Dashboard> dashboardAction = Dashboard.toDashboard(dashboardList);
         Assert.assertEquals(dashboardAction.size(), dashboardList.size());
     }
-
-    /*
-    @Test
-    public void testingTheConvertMethod(){
-        List<List<Object>> dashboardList =
-                List.of(
-                        List.of("Brand 1", new BigInteger(String.valueOf(2)), new BigDecimal(2000000)),
-                        List.of("Brand 2", new BigInteger(String.valueOf(3)), new BigDecimal(54000000))
-                );
-        when(vehicleRepository.getDashboard()).thenReturn(dashboardList);
-        var test = dashboardController.getAll();
-    }
-     */
 }
