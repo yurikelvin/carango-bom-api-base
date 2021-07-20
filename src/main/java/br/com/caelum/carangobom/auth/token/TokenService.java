@@ -19,9 +19,6 @@ public class TokenService {
     @Value("${carangobom.jwt.secret}")
     private String secret;
 
-    public TokenService() {
-    }
-
     public String generateToken(Authentication authentication) {
         User signedUser = (User) authentication.getPrincipal();
         Date today = new Date();
