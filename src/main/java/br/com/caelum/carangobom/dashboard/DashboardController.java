@@ -7,13 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -22,16 +16,15 @@ public class DashboardController {
     @Autowired
     private VehicleRepository vehicleRepository;
 
+    @Autowired
+    public DashboardController(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
+    }
+
     @GetMapping
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<List<Dashboard>> getAll(){
         List<List<Object>> list = vehicleRepository.getDashboard();
-
-        List<Dashboard> listDashboard = new ArrayList<>(1);
-
-        list.forEach(el ->
-            listDashboard.add(new Dashboard((String) el.get(0), (BigInteger) el.get(1), (BigDecimal) el.get(2)))
-        );
-
+        List<Dashboard> listDashboard = Dashboard.toDashboard(list);
         return ResponseEntity.ok(listDashboard);
     }
 }
