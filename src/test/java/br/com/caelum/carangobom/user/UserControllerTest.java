@@ -86,7 +86,7 @@ class UserControllerTest {
     void shouldFindUserWithPathId(){
         User user = new User(1L, "username1", "password1");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        var findById = userController.details(user.getId());
+        ResponseEntity<UserDTO> findById = userController.details(user.getId());
         assertEquals(findById.getStatusCodeValue(), 200);
     }
 

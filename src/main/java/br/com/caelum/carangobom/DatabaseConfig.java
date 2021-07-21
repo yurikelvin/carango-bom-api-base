@@ -17,3 +17,4 @@ public class DatabaseConfig {
         return new HikariDataSource(config);
     }
 }
+
