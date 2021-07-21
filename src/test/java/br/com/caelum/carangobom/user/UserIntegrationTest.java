@@ -121,7 +121,7 @@ public class UserIntegrationTest {
         entityManager.persist(converted);
         entityManager.flush();
 
-        var accessToken = new BCryptPasswordEncoder().encode(converted.getPassword());
+        String accessToken = new BCryptPasswordEncoder().encode(converted.getPassword());
         URI uri = new URI("/users/" + converted.getId());
 
         mockMvc.perform(MockMvcRequestBuilders
